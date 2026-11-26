@@ -775,6 +775,16 @@ function renderExplanationVoice(voice, explanationQuality, previousQuality) {
     chord, template.voicing, isOpen ? `l’accord ouvert ${template.label}` : `forme ${qualityLabel} sur corde ${explanationString}`, "Diagramme", template.barre, template.bassString, changedStrings
   );
   diagram.setAttribute("role", "group");
+  diagram.setAttribute("tabindex", "0");
+  diagram.setAttribute("aria-label", `${diagram.getAttribute("aria-label")}. Appuyez sur Entrée pour agrandir.`);
+  diagram.addEventListener("click", event => {
+    if (!event.target.closest(".diagram-alternative")) openExplanationDialog(voice);
+  });
+  diagram.addEventListener("keydown", event => {
+    if (event.target !== diagram || (event.key !== "Enter" && event.key !== " ")) return;
+    event.preventDefault();
+    openExplanationDialog(voice);
+  });
   const changes = changedStrings.map(index => {
     const oldFret = previous.voicing[index];
     const newFret = template.voicing[index];
@@ -912,19 +922,37 @@ function renderExplanation(family, previousQuality = null) {
   });
 }
 
+function openExplanationDialog(voice) {
+  const dialog = voice.querySelector(".explanation-dialog");
+  if (dialog.open) return;
+  const family = voice.closest(".explanation-family");
+  const title = voice.querySelector(".chord-title");
+  const diagram = voice.querySelector(".explanation-diagram");
+  const intervals = voice.querySelector(".explanation-intervals");
+  const change = voice.querySelector(".explanation-change");
+  const qualities = dialog.querySelector(".explanation-dialog-qualities");
+  dialog.querySelector(".explanation-dialog-controls input").checked =
+    document.querySelector("#explanation-colorblind-mode").checked;
+  qualities.replaceChildren();
+  family.querySelectorAll(".explanation-quality").forEach(source => {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "quality-tab explanation-dialog-quality";
+    button.dataset.quality = source.dataset.quality;
+    button.textContent = source.textContent;
+    button.setAttribute("aria-pressed", source.getAttribute("aria-pressed"));
+    button.addEventListener("click", () => source.click());
+    qualities.appendChild(button);
+  });
+  dialog.append(title, qualities, diagram, intervals, change);
+  dialog.showModal();
+}
+
 function initializeExplanationDialogs() {
   document.querySelectorAll(".explanation-voice").forEach((voice, index) => {
-    const family = voice.closest(".explanation-family");
     const content = [...voice.children];
     const title = voice.querySelector(".chord-title");
     title.id = `explanation-expanded-title-${index}`;
-    const expand = document.createElement("button");
-    expand.type = "button";
-    expand.className = "quality-tab explanation-expand";
-    expand.textContent = "Agrandir";
-    expand.setAttribute("aria-label", voice.dataset.string
-      ? `Agrandir le diagramme sur corde ${voice.dataset.string}`
-      : "Agrandir le diagramme de l’accord ouvert");
     const dialog = document.createElement("dialog");
     dialog.className = "chord-dialog explanation-dialog";
     dialog.setAttribute("aria-labelledby", title.id);
@@ -932,6 +960,15 @@ function initializeExplanationDialogs() {
     close.type = "button";
     close.className = "dialog-close";
     close.textContent = "Fermer";
+    const colorblindControls = document.querySelector("#explanation-panel .interval-controls").cloneNode(true);
+    colorblindControls.classList.add("explanation-dialog-controls");
+    const colorblindInput = colorblindControls.querySelector("input");
+    colorblindInput.removeAttribute("id");
+    colorblindInput.addEventListener("change", () => {
+      const original = document.querySelector("#explanation-colorblind-mode");
+      original.checked = colorblindInput.checked;
+      original.dispatchEvent(new Event("change", { bubbles: true }));
+    });
     const qualities = document.createElement("div");
     qualities.className = "quality-tabs explanation-dialog-qualities";
     qualities.setAttribute("role", "group");
@@ -947,24 +984,11 @@ function initializeExplanationDialogs() {
       }
     });
     dialog.addEventListener("close", () => {
-      content.forEach(element => voice.insertBefore(element, expand));
+      content.forEach(element => voice.insertBefore(element, dialog));
+      voice.querySelector(".chord-diagram").focus();
     });
-    expand.addEventListener("click", () => {
-      qualities.replaceChildren();
-      family.querySelectorAll(".explanation-quality").forEach(source => {
-        const button = document.createElement("button");
-        button.type = "button";
-        button.className = "quality-tab explanation-dialog-quality";
-        button.dataset.quality = source.dataset.quality;
-        button.textContent = source.textContent;
-        button.setAttribute("aria-pressed", source.getAttribute("aria-pressed"));
-        button.addEventListener("click", () => source.click());
-        qualities.appendChild(button);
-      });
-      dialog.append(close, title, qualities, ...content.filter(element => element !== title));
-      dialog.showModal();
-    });
-    voice.append(expand, dialog);
+    dialog.append(close, colorblindControls, qualities);
+    voice.appendChild(dialog);
   });
 }
 

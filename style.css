@@ -293,9 +293,9 @@ body.colorblind-enabled .interval-shape-legend { display: block; }
 .explanation-voice { min-width: 0; }
 .explanation-voice .chord-title { margin: 0 0 8px; font-size: clamp(1rem, 3vw, 1.3rem); }
 .explanation-diagram { width: min(100%, 260px); }
-.explanation-diagram .chord-diagram { width: min(100%, 240px); }
+.explanation-diagram .chord-diagram { width: min(100%, 240px); cursor: zoom-in; }
+.explanation-diagram .chord-diagram:focus-visible { outline: 3px solid var(--brass); outline-offset: 3px; }
 .explanation-voice .chord-intervals { margin: 10px 0; font-size: .9rem; }
-.explanation-expand { margin-top: 6px; }
 .explanation-diagram .chord-diagram .diagram-changed { stroke: #fff; stroke-width: 2; }
 .explanation-diagram .chord-diagram .diagram-previous { fill: none; stroke: #fff; stroke-width: 1.4; stroke-dasharray: 2 2; }
 .explanation-diagram .chord-diagram .diagram-unavailable { opacity: .35; }
@@ -405,7 +405,7 @@ body.colorblind-enabled .chord-diagram .diagram-open-shape { display: block; }
 .chord-dialog .chord-diagram { width: min(100%, 230px); }
 .chord-dialog .positions-grid { grid-template-columns: minmax(0, 270px); }
 .explanation-dialog .explanation-diagram { width: min(100%, 420px); margin: 0 auto; }
-.explanation-dialog .explanation-diagram .chord-diagram { width: min(100%, 400px); }
+.explanation-dialog .explanation-diagram .chord-diagram { width: min(100%, 400px); cursor: default; }
 .explanation-dialog .explanation-change { font-size: .9rem; }
 .dialog-close {
   display: block;

@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#10120f">
   <title>Outils guitare · Accordeur et accords</title>
   <!-- Changer la version des fichiers modifiés à chaque mise en ligne. -->
-  <link rel="stylesheet" href="style.css?v=20261126-5">
+  <link rel="stylesheet" href="style.css?v=20261126-6">
 </head>
 <body>
   <main>
@@ -206,12 +206,14 @@
         <button class="quality-tab explanation-tab" id="explanation-seventh-tab" type="button" role="tab" aria-selected="false" aria-controls="explanation-seventh-panel" tabindex="-1">7 / maj7 / m7 / m7M</button>
         <button class="quality-tab explanation-tab" id="explanation-open-tab" type="button" role="tab" aria-selected="false" aria-controls="explanation-open-panel" tabindex="-1">Accords ouverts</button>
       </div>
-      <label class="interval-toggle">
-        <input id="explanation-colorblind-mode" type="checkbox" autocomplete="off">
-        Mode daltonien : repères par formes
-      </label>
-      <p class="interval-shape-legend">Formes : rond = fondamentale, carré = tierce, triangle = quinte, losange = septième.</p>
-      <p class="chord-theory">Les cercles pointillés indiquent les positions alternatives. Cliquez sur un cercle ou faites-le glisser sur la note actuelle.</p>
+      <div class="interval-controls">
+        <label class="interval-toggle">
+          <input id="explanation-colorblind-mode" type="checkbox" autocomplete="off">
+          Mode daltonien : repères par formes
+        </label>
+        <p class="interval-shape-legend">Formes : rond = fondamentale, carré = tierce, triangle = quinte, losange = septième.</p>
+      </div>
+      <p class="chord-theory">Cliquez sur un diagramme pour l’agrandir. Les cercles pointillés indiquent les positions alternatives : cliquez dessus ou faites-les glisser sur la note actuelle.</p>
       <section class="explanation-family" id="explanation-major-minor-panel" role="tabpanel" aria-labelledby="explanation-major-minor-tab" data-family="major-minor">
         <h3 class="chord-section-title">Majeur / mineur</h3>
         <p class="chord-theory">Pour passer de majeur à mineur, la tierce majeure descend d’une case et devient mineure. La fondamentale et la quinte restent identiques.</p>
@@ -293,6 +295,6 @@
     </dialog>
   </main>
 
-  <script src="app.js?v=20261126-6"></script>
+  <script src="app.js?v=20261126-7"></script>
 </body>
 </html>
