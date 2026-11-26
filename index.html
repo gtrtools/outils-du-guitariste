@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#10120f">
   <title>Outils guitare · Accordeur et accords</title>
   <!-- Changer la version des fichiers modifiés à chaque mise en ligne. -->
-  <link rel="stylesheet" href="style.css?v=20261126-1">
+  <link rel="stylesheet" href="style.css?v=20261126-5">
 </head>
 <body>
   <main>
@@ -16,13 +16,16 @@
       <p>Accordez votre guitare et explorez ses accords.</p>
     </header>
 
-    <div class="app-tabs" role="tablist" aria-label="Outils guitare">
-      <button class="app-tab" id="tuner-tab" type="button" role="tab" aria-selected="true" aria-controls="tuner-panel">Accordeur</button>
-      <button class="app-tab" id="chords-tab" type="button" role="tab" aria-selected="false" aria-controls="chords-panel" tabindex="-1">Dictionnaire d’accords</button>
-      <button class="app-tab" id="explanation-tab" type="button" role="tab" aria-selected="false" aria-controls="explanation-panel" tabindex="-1">Explication</button>
-    </div>
-
-    <section class="tuner" id="tuner-panel" role="tabpanel" aria-labelledby="tuner-tab">
+    <section class="home-panel" id="home-panel" aria-label="Accueil">
+      <h2>Choisissez un outil</h2>
+      <div class="home-actions">
+        <button class="home-action" type="button" data-panel-target="tuner-panel">Accordeur</button>
+        <button class="home-action" type="button" data-panel-target="chords-panel">Dictionnaire d’accords</button>
+        <button class="home-action" type="button" data-panel-target="explanation-panel">Comprendre les accords</button>
+      </div>
+    </section>
+    <button class="home-return" id="home-return" type="button" hidden>← Accueil</button>
+    <section class="tuner" id="tuner-panel" aria-label="Accordeur" tabindex="-1" hidden>
       <div class="tuner-display" role="group" aria-label="Écran de l’accordeur">
         <div class="readout" aria-live="polite">
           <div class="note" id="note">--</div>
@@ -66,7 +69,7 @@
       </div>
     </section>
 
-    <section class="dictionary" id="chords-panel" role="tabpanel" aria-labelledby="chords-tab" hidden>
+    <section class="dictionary" id="chords-panel" aria-label="Dictionnaire d’accords" tabindex="-1" hidden>
       <h2>Dictionnaire d’accords</h2>
       <p class="dictionary-intro">Accords ouverts essentiels et formes barrées mobiles. Cliquez sur un accord pour agrandir son diagramme.</p>
       <div class="interval-controls">
@@ -80,6 +83,18 @@
         </label>
         <p class="interval-shape-legend">Formes : rond = fondamentale, carré = tierce, triangle = quinte, losange = septième.</p>
       </div>
+      <label class="search-label" for="chord-search">Rechercher un accord</label>
+      <input class="chord-search" id="chord-search" type="search" placeholder="Ex. D7, F#m, B♭maj7" autocomplete="off">
+      <p class="chord-theory search-help">Accords majeurs, mineurs, 7, maj7 et m7.</p>
+      <div id="chord-suggestions" hidden>
+        <p class="chord-theory">Accords proposés :</p>
+        <div class="quality-tabs" id="chord-suggestion-buttons" role="group" aria-label="Accords proposés"></div>
+      </div>
+      <section id="chord-search-results" aria-label="Résultats de recherche" hidden>
+        <p class="chord-count" id="chord-search-status" role="status"></p>
+        <div class="chord-grid" id="chord-search-grid"></div>
+      </section>
+      <div id="chord-browse">
       <div class="position-tabs" role="tablist" aria-label="Type de positions d’accord">
         <button class="position-tab" id="open-positions-tab" type="button" role="tab" aria-selected="true" aria-controls="open-positions-panel">Positions ouvertes</button>
         <button class="position-tab" id="barre-positions-tab" type="button" role="tab" aria-selected="false" aria-controls="barre-positions-panel" tabindex="-1">Barrés</button>
@@ -181,8 +196,9 @@
           </div>
         </section>
       </section>
+      </div>
     </section>
-    <section class="dictionary explanation" id="explanation-panel" role="tabpanel" aria-labelledby="explanation-tab" hidden>
+    <section class="dictionary explanation" id="explanation-panel" aria-label="Comprendre les accords" tabindex="-1" hidden>
       <h2>Comprendre les formes d’accords</h2>
       <p class="dictionary-intro">Changez de forme pour voir les notes qui se déplacent, en barré ou en accord ouvert.</p>
       <div class="quality-tabs" role="tablist" aria-label="Famille d’accords à comparer">
@@ -219,8 +235,8 @@
         </div>
       </section>
       <section class="explanation-family" id="explanation-seventh-panel" role="tabpanel" aria-labelledby="explanation-seventh-tab" data-family="seventh" hidden>
-        <details class="explanation-theory">
-          <summary>Afficher les explications</summary>
+        <details class="explanation-theory" open>
+          <summary>Explications</summary>
           <p><strong>maj7 → 7 :</strong> la <span class="interval-seventh">7<sup>ème</sup></span> descend d’une case : majeure → mineure.</p>
           <p><strong>7 → m7 :</strong> la <span class="interval-third">3<sup>ce</sup></span> descend d’une case : majeure → mineure.</p>
           <p><strong>m7M :</strong> une <span class="interval-third">3<sup>ce</sup></span> mineure et une <span class="interval-seventh">7<sup>ème</sup></span> majeure.</p>
@@ -251,8 +267,8 @@
         </div>
       </section>
       <section class="explanation-family" id="explanation-open-panel" role="tabpanel" aria-labelledby="explanation-open-tab" data-family="open" hidden>
-        <details class="explanation-theory">
-          <summary>Afficher les explications</summary>
+        <details class="explanation-theory" open>
+          <summary>Explications</summary>
           <p><strong>Majeur → mineur :</strong> la <span class="interval-third">3<sup>ce</sup></span> descend d’une case : majeure → mineure.</p>
           <p><strong>maj7 → 7 :</strong> la <span class="interval-seventh">7<sup>ème</sup></span> descend d’une case : majeure → mineure.</p>
           <p><strong>7 → m7 :</strong> la <span class="interval-third">3<sup>ce</sup></span> descend d’une case : majeure → mineure.</p>
@@ -277,6 +293,6 @@
     </dialog>
   </main>
 
-  <script src="app.js?v=20261126-1"></script>
+  <script src="app.js?v=20261126-6"></script>
 </body>
 </html>

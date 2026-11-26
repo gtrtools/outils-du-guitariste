@@ -135,7 +135,8 @@ const hintDisplay = document.querySelector("#hint");
 const tuningModeButtons = [...document.querySelectorAll("#chromatic-mode, #guitar-mode")];
 const languageButtons = [...document.querySelectorAll("#english-language, #french-language")];
 const ticksDisplay = document.querySelector("#ticks");
-const appTabs = [...document.querySelectorAll(".app-tab")];
+const homePanel = document.querySelector("#home-panel");
+const homeReturn = document.querySelector("#home-return");
 const appPanels = [document.querySelector("#tuner-panel"), document.querySelector("#chords-panel"), document.querySelector("#explanation-panel")];
 const positionTabs = [...document.querySelectorAll(".position-tab")];
 const positionPanels = [
@@ -186,6 +187,13 @@ const chordDialog = document.querySelector("#chord-dialog");
 const expandedChord = document.querySelector("#expanded-chord");
 const closeChordDialog = document.querySelector("#close-chord-dialog");
 const showIntervals = document.querySelector("#show-intervals");
+const chordSearch = document.querySelector("#chord-search");
+const chordSuggestions = document.querySelector("#chord-suggestions");
+const chordSuggestionButtons = document.querySelector("#chord-suggestion-buttons");
+const chordSearchResults = document.querySelector("#chord-search-results");
+const chordSearchStatus = document.querySelector("#chord-search-status");
+const chordSearchGrid = document.querySelector("#chord-search-grid");
+const chordBrowse = document.querySelector("#chord-browse");
 const colorblindModes = [...document.querySelectorAll("#colorblind-mode, #explanation-colorblind-mode")];
 const explanationTabs = [...document.querySelectorAll(".explanation-tab")];
 const explanationFamilies = [...document.querySelectorAll(".explanation-family")];
@@ -204,7 +212,7 @@ const explanationOpenTemplates = [
 const explanationOpenQualityOrder = ["", "m", "7", "maj7", "m7", "mMaj7"];
 const explanationOpenRoots = document.querySelector("#explanation-open-roots");
 const explanationOpenQualities = document.querySelector("#explanation-open-qualities");
-let explanationOpenRoot = "D";
+let explanationOpenRoot = "E";
 let mode = "chromatic";
 let language = "english";
 let audioContext;
@@ -255,16 +263,23 @@ function formatNote(note) {
   return match ? `${frenchNames[match[1]]}${match[2]}` : note;
 }
 
-function selectTab(selectedTab) {
-  appTabs.forEach(tab => {
-    const selected = tab === selectedTab;
-    tab.setAttribute("aria-selected", String(selected));
-    tab.tabIndex = selected ? 0 : -1;
-  });
+function selectTool(selectedPanel) {
+  homePanel.hidden = true;
+  homeReturn.hidden = false;
+  if (selectedPanel.id === "explanation-panel") {
+    selectQualityTab(explanationTabs, explanationFamilies, explanationTabs[0]);
+  }
   appPanels.forEach(panel => {
-    panel.hidden = panel.id !== selectedTab.getAttribute("aria-controls");
+    panel.hidden = panel !== selectedPanel;
   });
-  if (selectedTab.id !== "tuner-tab" && stream) stopTuner();
+  if (selectedPanel.id !== "tuner-panel" && stream) stopTuner();
+}
+
+function showHome() {
+  if (stream) stopTuner();
+  appPanels.forEach(panel => { panel.hidden = true; });
+  homeReturn.hidden = true;
+  homePanel.hidden = false;
 }
 
 function selectPositionTab(selectedTab) {
@@ -444,12 +459,12 @@ function createIntervalShape(intervalClass, x, y, open = false) {
   });
 }
 
-function createChordDiagram(chord, voicing, chordLabel, positionLabel, barre = null, bassString = null, changedStrings = []) {
+function createChordDiagram(chord, voicing, chordLabel, positionLabel, barre = null, bassString = null, changedStrings = [], showBarreFret = false) {
   const svg = createSvgElement("svg", {
     class: "chord-diagram",
-    viewBox: "0 0 124 146",
+    viewBox: showBarreFret ? "-16 0 140 146" : "0 0 124 146",
     role: "img",
-    "aria-label": `${positionLabel} de ${chordLabel}, case ${positionStartFret(voicing)}`
+    "aria-label": `${positionLabel} de ${chordLabel}, case ${showBarreFret ? barre.fret : positionStartFret(voicing)}`
   });
   const xPosition = index => 12 + index * 20;
   const firstFret = positionStartFret(voicing);
@@ -460,7 +475,14 @@ function createChordDiagram(chord, voicing, chordLabel, positionLabel, barre = n
       class: line === 0 && firstFret === 1 ? "diagram-nut" : "diagram-line"
     }));
   }
-  if (firstFret > 1) {
+  if (showBarreFret) {
+    const fretLabel = createSvgElement("text", {
+      x: 2, y: 25 + (barre.fret - firstFret + 0.5) * 18,
+      "text-anchor": "end", class: "diagram-fret-label"
+    });
+    fretLabel.textContent = String(barre.fret);
+    svg.appendChild(fretLabel);
+  } else if (firstFret > 1) {
     const fretLabel = createSvgElement("text", {
       x: 2, y: 34, "text-anchor": "start", class: "diagram-string-label"
     });
@@ -576,7 +598,9 @@ function renderChordCard(grid, chord, positions, displayTitle = chord.label, dis
       displayTitle,
       position.positionLabel,
       position.barre,
-      position.bassString
+      position.bassString,
+      [],
+      position.showBarreFret
     ));
     positionsGrid.appendChild(item);
   });
@@ -657,6 +681,69 @@ function renderOpenChords() {
   openSeventhCount.textContent = `${openSeventhTemplates.length} accords · ${openSeventhTemplates.length} positions`;
   openMaj7Count.textContent = `${openMaj7Templates.length} accords · ${openMaj7Templates.length} positions`;
   openM7Count.textContent = `${openM7Templates.length} accords · ${openM7Templates.length} positions`;
+}
+
+function renderChordSearch() {
+  const query = normalizeSearchText(chordSearch.value);
+  chordBrowse.hidden = Boolean(query);
+  chordSearchResults.hidden = !query;
+  chordSearchGrid.replaceChildren();
+  chordSuggestionButtons.replaceChildren();
+  chordSuggestions.hidden = true;
+  if (!query) {
+    chordSearchStatus.textContent = "";
+    return;
+  }
+  const supportedQualities = ["", "m", "7", "maj7", "m7"];
+  const rootPitch = findPitchClass(query);
+  const matchingChords = chords.filter(candidate => supportedQualities.includes(candidate.suffix)
+    && (rootPitch !== null ? candidate.root === rootPitch
+      : [candidate.label, candidate.name, ...candidate.searchTerms].some(term => normalizeSearchText(term).startsWith(query))));
+  chordSuggestions.hidden = matchingChords.length === 0;
+  matchingChords.forEach(candidate => {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "quality-tab";
+    button.textContent = candidate.label;
+    button.addEventListener("click", () => {
+      chordSearch.value = candidate.label;
+      renderChordSearch();
+      chordSearch.focus();
+    });
+    chordSuggestionButtons.appendChild(button);
+  });
+  const chord = matchingChords.find(candidate =>
+    [candidate.label, candidate.name, ...candidate.searchTerms].some(term => normalizeSearchText(term) === query));
+  if (!chord) {
+    chordSearchStatus.textContent = matchingChords.length
+      ? "Choisissez un accord proposé ou poursuivez votre saisie."
+      : "Aucun accord trouvé. Essayez par exemple D7, F#m ou B♭maj7.";
+    return;
+  }
+  const openTemplates = [...openChordTemplates, ...openSeventhTemplates, ...openMaj7Templates, ...openM7Templates];
+  const open = openTemplates.find(template => template.label === chord.label);
+  chordSearchStatus.textContent = open
+    ? `Positions disponibles pour ${chord.label}.`
+    : `Aucune position ouverte de ${chord.label} dans le dictionnaire.`;
+  if (open) {
+    renderChordCard(chordSearchGrid, chord, [{
+      voicing: open.voicing, barre: open.barre || null, bassString: null,
+      caption: "Position ouverte", positionLabel: "Position ouverte"
+    }], `${chord.label} · Position ouverte`, chord.name);
+  }
+  const templates = [...barreMajorMinorTemplates, ...barreSeventhTemplates, ...barreMaj7M7Templates];
+  ["E6", "A5"].forEach(string => {
+    const root = string === "E6" ? "F" : "B♭";
+    const template = templates.find(item => item.label === `${root}${chord.suffix}`);
+    const fret = (chord.root - strings[template.bassString].midi % 12 + 12) % 12 || 12;
+    const offset = fret - 1;
+    const caption = `Barré · corde ${string} · case ${fret}`;
+    renderChordCard(chordSearchGrid, chord, [{
+      voicing: template.voicing.map(value => value === null ? null : value + offset),
+      barre: { ...template.barre, fret }, bassString: template.bassString,
+      caption, positionLabel: caption, showBarreFret: true
+    }], `${chord.label} · ${caption}`, chord.name);
+  });
 }
 
 function explanationTemplate(string, quality) {
@@ -809,6 +896,9 @@ function renderExplanationVoice(voice, explanationQuality, previousQuality) {
   voice.querySelector(".explanation-diagram").replaceChildren(diagram);
   voice.querySelector(".chord-title").textContent = isOpen ? `Accord ${template.label}` : `Forme ${qualityLabel} · corde ${explanationString}`;
   voice.querySelector(".explanation-intervals").replaceChildren(createChordIntervals(chord));
+  voice.querySelectorAll(".explanation-dialog-quality").forEach(button => {
+    button.setAttribute("aria-pressed", String(button.dataset.quality === explanationQuality));
+  });
   voice.querySelector(".explanation-change").textContent = changes.length
     ? changes.join(" ")
     : isOpen && qualities.length === 1
@@ -819,6 +909,62 @@ function renderExplanationVoice(voice, explanationQuality, previousQuality) {
 function renderExplanation(family, previousQuality = null) {
   family.querySelectorAll(".explanation-voice").forEach(voice => {
     renderExplanationVoice(voice, explanationSelections[family.dataset.family], previousQuality);
+  });
+}
+
+function initializeExplanationDialogs() {
+  document.querySelectorAll(".explanation-voice").forEach((voice, index) => {
+    const family = voice.closest(".explanation-family");
+    const content = [...voice.children];
+    const title = voice.querySelector(".chord-title");
+    title.id = `explanation-expanded-title-${index}`;
+    const expand = document.createElement("button");
+    expand.type = "button";
+    expand.className = "quality-tab explanation-expand";
+    expand.textContent = "Agrandir";
+    expand.setAttribute("aria-label", voice.dataset.string
+      ? `Agrandir le diagramme sur corde ${voice.dataset.string}`
+      : "Agrandir le diagramme de l’accord ouvert");
+    const dialog = document.createElement("dialog");
+    dialog.className = "chord-dialog explanation-dialog";
+    dialog.setAttribute("aria-labelledby", title.id);
+    const close = document.createElement("button");
+    close.type = "button";
+    close.className = "dialog-close";
+    close.textContent = "Fermer";
+    const qualities = document.createElement("div");
+    qualities.className = "quality-tabs explanation-dialog-qualities";
+    qualities.setAttribute("role", "group");
+    qualities.setAttribute("aria-label", "Forme d’accord");
+    close.addEventListener("click", () => dialog.close());
+    dialog.addEventListener("click", event => {
+      if (event.target === dialog) dialog.close();
+    });
+    dialog.addEventListener("keydown", event => {
+      if (event.key === "Escape") {
+        event.preventDefault();
+        dialog.close();
+      }
+    });
+    dialog.addEventListener("close", () => {
+      content.forEach(element => voice.insertBefore(element, expand));
+    });
+    expand.addEventListener("click", () => {
+      qualities.replaceChildren();
+      family.querySelectorAll(".explanation-quality").forEach(source => {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "quality-tab explanation-dialog-quality";
+        button.dataset.quality = source.dataset.quality;
+        button.textContent = source.textContent;
+        button.setAttribute("aria-pressed", source.getAttribute("aria-pressed"));
+        button.addEventListener("click", () => source.click());
+        qualities.appendChild(button);
+      });
+      dialog.append(close, title, qualities, ...content.filter(element => element !== title));
+      dialog.showModal();
+    });
+    voice.append(expand, dialog);
   });
 }
 
@@ -1080,20 +1226,18 @@ button.addEventListener("click", () => {
   if (stream) stopTuner();
   else startTuner();
 });
-appTabs.forEach((tab, index) => {
-  tab.addEventListener("click", () => selectTab(tab));
-  tab.addEventListener("keydown", event => {
-    let nextIndex = index;
-    if (event.key === "ArrowRight") nextIndex = (index + 1) % appTabs.length;
-    else if (event.key === "ArrowLeft") nextIndex = (index + appTabs.length - 1) % appTabs.length;
-    else if (event.key === "Home") nextIndex = 0;
-    else if (event.key === "End") nextIndex = appTabs.length - 1;
-    else return;
-    event.preventDefault();
-    appTabs[nextIndex].focus();
-    selectTab(appTabs[nextIndex]);
+document.querySelectorAll(".home-action").forEach(action => {
+  action.addEventListener("click", () => {
+    const panel = document.getElementById(action.dataset.panelTarget);
+    selectTool(panel);
+    panel.focus();
   });
 });
+homeReturn.addEventListener("click", () => {
+  showHome();
+  homePanel.querySelector(".home-action").focus();
+});
+chordSearch.addEventListener("input", renderChordSearch);
 positionTabs.forEach((tab, index) => {
   tab.addEventListener("click", () => selectPositionTab(tab));
   tab.addEventListener("keydown", event => {
@@ -1137,7 +1281,7 @@ colorblindModes.forEach(input => {
 drawTicks();
 setMode("chromatic");
 setLanguage("english");
-selectTab(appTabs[0]);
+showHome();
 selectPositionTab(positionTabs[0]);
 selectQualityTab(openQualityTabs, openQualityPanels, openQualityTabs[0]);
 selectQualityTab(barreQualityTabs, barreQualityPanels, barreQualityTabs[0]);
@@ -1145,3 +1289,4 @@ selectQualityTab(explanationTabs, explanationFamilies, explanationTabs[0]);
 renderOpenChords();
 initializeExplanationOpen();
 explanationFamilies.filter(family => family.dataset.family !== "open").forEach(family => renderExplanation(family));
+initializeExplanationDialogs();
