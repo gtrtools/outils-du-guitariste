@@ -4,29 +4,50 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#10120f">
-  <title>Outils guitare · Accordeur et accords</title>
+  <title>Outils du guitariste · Accordeur et accords</title>
   <!-- Changer la version des fichiers modifiés à chaque mise en ligne. -->
-  <link rel="stylesheet" href="style.css?v=20261126-6">
+  <link rel="stylesheet" href="style.css?v=20261126-9">
 </head>
 <body>
   <main>
     <header>
-      <div class="eyebrow">Accordage et harmonie</div>
-      <h1>Outils guitare</h1>
+      <h1>Outils du guitariste</h1>
       <p>Accordez votre guitare et explorez ses accords.</p>
     </header>
 
     <section class="home-panel" id="home-panel" aria-label="Accueil">
       <h2>Choisissez un outil</h2>
       <div class="home-actions">
-        <button class="home-action" type="button" data-panel-target="tuner-panel">Accordeur</button>
-        <button class="home-action" type="button" data-panel-target="chords-panel">Dictionnaire d’accords</button>
-        <button class="home-action" type="button" data-panel-target="explanation-panel">Comprendre les accords</button>
+        <button class="home-action" type="button" data-panel-target="tuner-panel">
+          <svg class="home-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M9 18V5l10-2v13M9 9l10-2"/>
+            <ellipse cx="6.5" cy="18.5" rx="2.5" ry="1.8"/><ellipse cx="16.5" cy="16.5" rx="2.5" ry="1.8"/>
+          </svg>
+          Accordeur
+        </button>
+        <button class="home-action" type="button" data-panel-target="chords-panel">
+          <svg class="home-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M12 6c-2-2-5-2.5-9-1v14c4-1.5 7-1 9 1m0-14c2-2 5-2.5 9-1v14c-4-1.5-7-1-9 1m0-14v14"/>
+            <path d="M5.5 8.5h3M5.5 11.5h3M15.5 8.5h3M15.5 11.5h3"/>
+          </svg>
+          Dictionnaire d’accords
+        </button>
+        <button class="home-action" type="button" data-panel-target="explanation-panel">
+          <svg class="home-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M8.5 15.5c-.5-1.3-3-2.5-3-6a6.5 6.5 0 0 1 13 0c0 3.5-2.5 4.7-3 6M9 18h6M10 21h4"/>
+            <path d="M9.5 10.5 11 12l3.5-3.5"/>
+          </svg>
+          Comprendre les accords
+        </button>
       </div>
     </section>
     <button class="home-return" id="home-return" type="button" hidden>← Accueil</button>
     <section class="tuner" id="tuner-panel" aria-label="Accordeur" tabindex="-1" hidden>
       <div class="tuner-display" role="group" aria-label="Écran de l’accordeur">
+        <div class="tuner-display-heading" aria-hidden="true">
+          <span>Accordage</span>
+          <span>La 440 Hz</span>
+        </div>
         <div class="readout" aria-live="polite">
           <div class="note" id="note">--</div>
           <div class="frequency" id="frequency">Joue une note pour commencer</div>
@@ -51,8 +72,8 @@
 
       <div class="tuner-controls">
         <div class="mode-switch" role="group" aria-label="Mode d’accordage">
-          <button class="mode-button" id="chromatic-mode" type="button" aria-pressed="true">Chromatique</button>
-          <button class="mode-button" id="guitar-mode" type="button" aria-pressed="false">Guitare standard</button>
+          <button class="mode-button" id="guitar-mode" type="button" aria-pressed="true">Guitare standard</button>
+          <button class="mode-button" id="chromatic-mode" type="button" aria-pressed="false">Chromatique</button>
         </div>
         <div class="mode-switch language-switch" role="group" aria-label="Noms des notes">
           <button class="mode-button" id="english-language" type="button" aria-pressed="true">English · C D E</button>
@@ -61,12 +82,7 @@
       </div>
 
       <button class="action-button" id="toggle" type="button">Activer le micro</button>
-      <p class="hint" id="hint">Mode chromatique : affiche la note entendue en dièse et en bémol. Micro requis : rapproche l’instrument et joue une note à la fois.</p>
-      <div class="tuner-clip" aria-hidden="true">
-        <span class="clip-stem"></span>
-        <span class="clip-jaw clip-jaw-upper"></span>
-        <span class="clip-jaw clip-jaw-lower"></span>
-      </div>
+      <p class="hint" id="hint">Mode guitare : affiche E6, A5, D4, G3, B2 ou E1. Micro requis : rapproche l’instrument et joue une corde à vide à la fois.</p>
     </section>
 
     <section class="dictionary" id="chords-panel" aria-label="Dictionnaire d’accords" tabindex="-1" hidden>
@@ -295,6 +311,6 @@
     </dialog>
   </main>
 
-  <script src="app.js?v=20261126-7"></script>
+  <script src="app.js?v=20261126-8"></script>
 </body>
 </html>

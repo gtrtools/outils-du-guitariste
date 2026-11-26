@@ -213,7 +213,7 @@ const explanationOpenQualityOrder = ["", "m", "7", "maj7", "m7", "mMaj7"];
 const explanationOpenRoots = document.querySelector("#explanation-open-roots");
 const explanationOpenQualities = document.querySelector("#explanation-open-qualities");
 let explanationOpenRoot = "E";
-let mode = "chromatic";
+let mode = "guitar";
 let language = "english";
 let audioContext;
 let analyser;
@@ -1303,7 +1303,7 @@ colorblindModes.forEach(input => {
   });
 });
 drawTicks();
-setMode("chromatic");
+setMode(mode);
 setLanguage("english");
 showHome();
 selectPositionTab(positionTabs[0]);
