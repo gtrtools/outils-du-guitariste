@@ -276,9 +276,18 @@ body.colorblind-enabled .interval-shape-legend { display: block; }
 .explanation-diagram .chord-diagram .diagram-alternative:focus-visible .diagram-previous { stroke: var(--brass); stroke-width: 3; }
 .explanation-diagram .chord-diagram .diagram-hit-area { fill: transparent; }
 .explanation-diagram .chord-diagram .diagram-movement { fill: none; stroke: #fff; stroke-width: 1.2; }
-.explanation-diagram .chord-diagram .diagram-interval-label { fill: #211910; font: 700 7px ui-sans-serif, sans-serif; pointer-events: none; }
-.explanation-diagram .chord-diagram .diagram-interval-quality { font-size: 5.2px; }
-.explanation-diagram .chord-diagram .diagram-open-label { fill: #f4ead6; }
+.chord-diagram .diagram-interval-label { display: none; fill: #211910; font: 700 7px ui-sans-serif, sans-serif; pointer-events: none; }
+.explanation-diagram .diagram-interval-label, body.intervals-enabled .chord-card .diagram-interval-label, body.colorblind-enabled .chord-card .diagram-interval-label { display: block; }
+.chord-diagram .diagram-interval-quality { font-size: 5.2px; }
+.chord-diagram .diagram-open-label { fill: #f4ead6; }
+.chord-diagram .diagram-labeled-open { display: none; fill: none; stroke-width: 1.6; }
+body.intervals-enabled .chord-card .diagram-open { display: none; }
+body.intervals-enabled:not(.colorblind-enabled) .chord-card .diagram-labeled-open { display: block; }
+:is(body.intervals-enabled, body.colorblind-enabled) .chord-card .chord-diagram :is(.diagram-dot, .diagram-shape, .diagram-bass, .diagram-labeled-open) { transform: scale(1.2); transform-box: fill-box; transform-origin: center; }
+.chord-diagram .diagram-labeled-open.interval-fundamental { stroke: var(--interval-fundamental); }
+.chord-diagram .diagram-labeled-open.interval-third { stroke: var(--interval-third); }
+.chord-diagram .diagram-labeled-open.interval-fifth { stroke: var(--interval-fifth); }
+.chord-diagram .diagram-labeled-open.interval-seventh { stroke: var(--interval-seventh); }
 .explanation-diagram .chord-diagram circle.diagram-open.interval-fundamental { stroke: var(--interval-fundamental); }
 .explanation-diagram .chord-diagram circle.diagram-open.interval-third { stroke: var(--interval-third); }
 .explanation-diagram .chord-diagram circle.diagram-open.interval-fifth { stroke: var(--interval-fifth); }

@@ -9,7 +9,7 @@
   <link rel="icon" type="image/png" sizes="192x192" href="./assets/icon-192.png">
   <link rel="apple-touch-icon" href="./assets/icon-192.png">
   <!-- Changer la version des fichiers modifiés à chaque mise en ligne. -->
-  <link rel="stylesheet" href="style.css?v=20261126-11">
+  <link rel="stylesheet" href="style.css?v=20261126-12">
 </head>
 <body>
   <main>
@@ -91,6 +91,7 @@
     <section class="dictionary" id="chords-panel" aria-label="Dictionnaire d’accords" tabindex="-1" hidden>
       <h2>Dictionnaire d’accords</h2>
       <p class="dictionary-intro">Accords ouverts essentiels et formes barrées mobiles. Cliquez sur un accord pour agrandir son diagramme.</p>
+      <p class="chord-theory">Avec les intervalles en couleur ou le mode daltonien : F = fondamentale, 3 = tierce, 5 = quinte, 7 = septième ; M = majeure et m = mineure.</p>
       <div class="interval-controls">
         <label class="interval-toggle">
           <input id="show-intervals" type="checkbox">
@@ -314,7 +315,7 @@
     </dialog>
   </main>
 
-  <script src="app.js?v=20261126-10"></script>
+  <script src="app.js?v=20261126-11"></script>
   <script>
     if ("serviceWorker" in navigator) {
       navigator.serviceWorker.register("./service-worker.js", { updateViaCache: "none" })

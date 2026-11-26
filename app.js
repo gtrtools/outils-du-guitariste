@@ -555,6 +555,45 @@ function createChordDiagram(chord, voicing, chordLabel, positionLabel, barre = n
   return svg;
 }
 
+function addDiagramIntervalLabels(diagram, chord, voicing, changedStrings = [], explanation = false) {
+  const intervalLabels = {
+    "interval-fundamental": "F",
+    "interval-third": "3",
+    "interval-fifth": "5",
+    "interval-seventh": "7"
+  };
+  const intervalQualities = { 3: "m", 4: "M", 10: "m", 11: "M" };
+  const firstFret = positionStartFret(voicing);
+  voicing.forEach((fret, index) => {
+    if (fret === null) return;
+    const x = 12 + index * 20;
+    const y = fret === 0 ? 15 : 22 + (fret - firstFret + 0.5) * 18;
+    const intervalClass = chordIntervalClass(chord, index, fret);
+    if (fret === 0) {
+      const marker = createSvgElement("circle", {
+        cx: x, cy: y, r: explanation ? 6.6 : 5.5,
+        class: `${explanation ? "diagram-open" : "diagram-labeled-open"} ${intervalClass}${changedStrings.includes(index) ? " diagram-changed" : ""}`,
+        "aria-hidden": "true"
+      });
+      if (explanation) diagram.querySelector(`.diagram-open[x="${x}"]`).replaceWith(marker);
+      else diagram.appendChild(marker);
+    }
+    const label = createSvgElement("text", {
+      x, y, "text-anchor": "middle", "dominant-baseline": "central",
+      class: `diagram-interval-label${fret === 0 ? " diagram-open-label" : ""}`,
+      "aria-hidden": "true"
+    });
+    label.textContent = intervalLabels[intervalClass];
+    const interval = (strings[index].midi + fret - chord.root + 12) % 12;
+    if (intervalQualities[interval]) {
+      const quality = createSvgElement("tspan", { class: "diagram-interval-quality", dy: "-1.7" });
+      quality.textContent = intervalQualities[interval];
+      label.appendChild(quality);
+    }
+    diagram.appendChild(label);
+  });
+}
+
 function renderChordTemplates(grid, templates) {
   templates.forEach(template => {
     const chord = chords.find(candidate => candidate.label === template.label);
@@ -592,7 +631,7 @@ function renderChordCard(grid, chord, positions, displayTitle = chord.label, dis
     const caption = document.createElement("div");
     caption.className = "voicing-caption";
     caption.textContent = position.caption;
-    item.append(caption, createChordDiagram(
+    const diagram = createChordDiagram(
       chord,
       position.voicing,
       displayTitle,
@@ -601,7 +640,9 @@ function renderChordCard(grid, chord, positions, displayTitle = chord.label, dis
       position.bassString,
       [],
       position.showBarreFret
-    ));
+    );
+    addDiagramIntervalLabels(diagram, chord, position.voicing);
+    item.append(caption, diagram);
     positionsGrid.appendChild(item);
   });
   card.append(title, description, intervals, positionsGrid);
@@ -903,40 +944,7 @@ function renderExplanationVoice(voice, explanationQuality, previousQuality) {
     });
     diagram.appendChild(control);
   });
-  const intervalLabels = {
-    "interval-fundamental": "F",
-    "interval-third": "3",
-    "interval-fifth": "5",
-    "interval-seventh": "7"
-  };
-  const intervalQualities = { 3: "m", 4: "M", 10: "m", 11: "M" };
-  template.voicing.forEach((fret, index) => {
-    if (fret === null) return;
-    const x = 12 + index * 20;
-    const y = explanationFretY(fret);
-    const intervalClass = chordIntervalClass(chord, index, fret);
-    if (fret === 0) {
-      const marker = diagram.querySelector(`.diagram-open[x="${x}"]`);
-      marker.replaceWith(createSvgElement("circle", {
-        cx: x, cy: y, r: 6.6,
-        class: `diagram-open ${intervalClass}${changedStrings.includes(index) ? " diagram-changed" : ""}`,
-        "aria-hidden": "true"
-      }));
-    }
-    const label = createSvgElement("text", {
-      x, y, "text-anchor": "middle", "dominant-baseline": "central",
-      class: `diagram-interval-label${fret === 0 ? " diagram-open-label" : ""}`,
-      "aria-hidden": "true"
-    });
-    label.textContent = intervalLabels[intervalClass];
-    const interval = (strings[index].midi + fret - chord.root + 12) % 12;
-    if (intervalQualities[interval]) {
-      const quality = createSvgElement("tspan", { class: "diagram-interval-quality", dy: "-1.7" });
-      quality.textContent = intervalQualities[interval];
-      label.appendChild(quality);
-    }
-    diagram.appendChild(label);
-  });
+  addDiagramIntervalLabels(diagram, chord, template.voicing, changedStrings, true);
   voice.querySelector(".explanation-diagram").replaceChildren(diagram);
   voice.querySelector(".chord-title").textContent = isOpen ? `Accord ${template.label}` : `Forme ${qualityLabel} · corde ${explanationString}`;
   voice.querySelector(".explanation-intervals").replaceChildren(createChordIntervals(chord));
