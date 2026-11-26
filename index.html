@@ -9,7 +9,7 @@
   <link rel="icon" type="image/png" sizes="192x192" href="./assets/icon-192.png">
   <link rel="apple-touch-icon" href="./assets/icon-192.png">
   <!-- Changer la version des fichiers modifiés à chaque mise en ligne. -->
-  <link rel="stylesheet" href="style.css?v=20261126-12">
+  <link rel="stylesheet" href="style.css?v=20261126-15">
 </head>
 <body>
   <main>
@@ -91,7 +91,6 @@
     <section class="dictionary" id="chords-panel" aria-label="Dictionnaire d’accords" tabindex="-1" hidden>
       <h2>Dictionnaire d’accords</h2>
       <p class="dictionary-intro">Accords ouverts essentiels et formes barrées mobiles. Cliquez sur un accord pour agrandir son diagramme.</p>
-      <p class="chord-theory">Avec les intervalles en couleur ou le mode daltonien : F = fondamentale, 3 = tierce, 5 = quinte, 7 = septième ; M = majeure et m = mineure.</p>
       <div class="interval-controls">
         <label class="interval-toggle">
           <input id="show-intervals" type="checkbox">
@@ -101,7 +100,6 @@
           <input id="colorblind-mode" type="checkbox" autocomplete="off">
           Mode daltonien : repères par formes
         </label>
-        <p class="interval-shape-legend">Formes : rond = fondamentale, carré = tierce, triangle = quinte, losange = septième.</p>
       </div>
       <label class="search-label" for="chord-search">Rechercher un accord</label>
       <input class="chord-search" id="chord-search" type="search" placeholder="Ex. D7, F#m, B♭maj7" autocomplete="off">
@@ -128,26 +126,22 @@
         </div>
         <section id="open-major-minor-panel" role="tabpanel" aria-labelledby="open-major-minor-tab">
           <h3 class="chord-section-title">Accords ouverts majeurs et mineurs</h3>
-          <p class="chord-theory">Un accord majeur se compose d’une fondamentale, d’une tierce majeure et d’une quinte juste.<br>Un accord mineur se compose d’une fondamentale, d’une tierce mineure et d’une quinte juste.</p>
-          <p class="chord-count" id="open-chord-count" aria-live="polite"></p>
+          <p class="chord-theory chord-formula">Majeur : <span class="interval-fundamental">Fondamentale</span> <span class="interval-third">3<sup>ce</sup>M</span> <span class="interval-fifth">5<sup>te</sup>J</span><br>Mineur : <span class="interval-fundamental">Fondamentale</span> <span class="interval-third">3<sup>ce</sup>m</span> <span class="interval-fifth">5<sup>te</sup>J</span></p>
           <div class="chord-grid" id="open-chord-grid" aria-live="polite"></div>
         </section>
         <section id="open-seventh-panel" role="tabpanel" aria-labelledby="open-seventh-tab" hidden>
           <h3 class="chord-section-title">Accords ouverts de 7e</h3>
-          <p class="chord-theory">Un accord de septième (7) s’obtient en ajoutant une septième mineure à un accord majeur.</p>
-          <p class="chord-count" id="open-seventh-count" aria-live="polite"></p>
+          <p class="chord-theory chord-formula">7 : <span class="interval-fundamental">Fondamentale</span> <span class="interval-third">3<sup>ce</sup>M</span> <span class="interval-fifth">5<sup>te</sup>J</span> <span class="interval-seventh">7<sup>ème</sup>m</span></p>
           <div class="chord-grid" id="open-seventh-grid" aria-live="polite"></div>
         </section>
         <section id="open-maj7-panel" role="tabpanel" aria-labelledby="open-maj7-tab" hidden>
           <h3 class="chord-section-title">Accords ouverts maj7</h3>
-          <p class="chord-theory">Un accord maj7 se compose d’une fondamentale, d’une tierce majeure, d’une quinte juste et d’une septième majeure.</p>
-          <p class="chord-count" id="open-maj7-count" aria-live="polite"></p>
+          <p class="chord-theory chord-formula">maj7 : <span class="interval-fundamental">Fondamentale</span> <span class="interval-third">3<sup>ce</sup>M</span> <span class="interval-fifth">5<sup>te</sup>J</span> <span class="interval-seventh">7<sup>ème</sup>M</span></p>
           <div class="chord-grid" id="open-maj7-grid" aria-live="polite"></div>
         </section>
         <section id="open-m7-panel" role="tabpanel" aria-labelledby="open-m7-tab" hidden>
           <h3 class="chord-section-title">Accords ouverts m7</h3>
-          <p class="chord-theory">Un accord m7 se compose d’une fondamentale, d’une tierce mineure, d’une quinte juste et d’une septième mineure.</p>
-          <p class="chord-count" id="open-m7-count" aria-live="polite"></p>
+          <p class="chord-theory chord-formula">m7 : <span class="interval-fundamental">Fondamentale</span> <span class="interval-third">3<sup>ce</sup>m</span> <span class="interval-fifth">5<sup>te</sup>J</span> <span class="interval-seventh">7<sup>ème</sup>m</span></p>
           <div class="chord-grid" id="open-m7-grid" aria-live="polite"></div>
         </section>
       </section>
@@ -161,7 +155,7 @@
         </div>
         <section id="barre-major-minor-panel" role="tabpanel" aria-labelledby="barre-major-minor-tab">
           <h3 class="chord-section-title">Formes barrées majeures et mineures</h3>
-          <p class="chord-theory">Un accord majeur se compose d’une fondamentale, d’une tierce majeure et d’une quinte juste.<br>Un accord mineur se compose d’une fondamentale, d’une tierce mineure et d’une quinte juste.</p>
+          <p class="chord-theory chord-formula">Majeur : <span class="interval-fundamental">Fondamentale</span> <span class="interval-third">3<sup>ce</sup>M</span> <span class="interval-fifth">5<sup>te</sup>J</span><br>Mineur : <span class="interval-fundamental">Fondamentale</span> <span class="interval-third">3<sup>ce</sup>m</span> <span class="interval-fifth">5<sup>te</sup>J</span></p>
           <div class="barre-string-groups">
             <section class="barre-string-group">
               <h4>Fondamentale sur la corde E6</h4>
@@ -175,7 +169,7 @@
         </section>
         <section id="barre-seventh-panel" role="tabpanel" aria-labelledby="barre-seventh-tab" hidden>
           <h3 class="chord-section-title">Formes barrées de 7e</h3>
-          <p class="chord-theory">Un accord de septième (7) s’obtient en ajoutant une septième mineure à un accord majeur.</p>
+          <p class="chord-theory chord-formula">7 : <span class="interval-fundamental">Fondamentale</span> <span class="interval-third">3<sup>ce</sup>M</span> <span class="interval-fifth">5<sup>te</sup>J</span> <span class="interval-seventh">7<sup>ème</sup>m</span></p>
           <div class="barre-string-groups">
             <section class="barre-string-group">
               <h4>Fondamentale sur la corde E6</h4>
@@ -189,7 +183,7 @@
         </section>
         <section id="barre-maj7-panel" role="tabpanel" aria-labelledby="barre-maj7-tab" hidden>
           <h3 class="chord-section-title">Formes barrées maj7</h3>
-          <p class="chord-theory">Un accord maj7 se compose d’une fondamentale, d’une tierce majeure, d’une quinte juste et d’une septième majeure.</p>
+          <p class="chord-theory chord-formula">maj7 : <span class="interval-fundamental">Fondamentale</span> <span class="interval-third">3<sup>ce</sup>M</span> <span class="interval-fifth">5<sup>te</sup>J</span> <span class="interval-seventh">7<sup>ème</sup>M</span></p>
           <div class="barre-string-groups">
             <section class="barre-string-group">
               <h4>Fondamentale sur la corde E6</h4>
@@ -203,7 +197,7 @@
         </section>
         <section id="barre-m7-panel" role="tabpanel" aria-labelledby="barre-m7-tab" hidden>
           <h3 class="chord-section-title">Formes barrées m7</h3>
-          <p class="chord-theory">Un accord m7 se compose d’une fondamentale, d’une tierce mineure, d’une quinte juste et d’une septième mineure.</p>
+          <p class="chord-theory chord-formula">m7 : <span class="interval-fundamental">Fondamentale</span> <span class="interval-third">3<sup>ce</sup>m</span> <span class="interval-fifth">5<sup>te</sup>J</span> <span class="interval-seventh">7<sup>ème</sup>m</span></p>
           <div class="barre-string-groups">
             <section class="barre-string-group">
               <h4>Fondamentale sur la corde E6</h4>
@@ -231,12 +225,11 @@
           <input id="explanation-colorblind-mode" type="checkbox" autocomplete="off">
           Mode daltonien : repères par formes
         </label>
-        <p class="interval-shape-legend">Formes : rond = fondamentale, carré = tierce, triangle = quinte, losange = septième.</p>
       </div>
-      <p class="chord-theory">Dans les notes : F = fondamentale, 3 = tierce, 5 = quinte, 7 = septième ; M = majeure et m = mineure. Cliquez sur un diagramme pour l’agrandir. Les cercles pointillés indiquent les positions alternatives : cliquez dessus ou faites-les glisser sur la note actuelle.</p>
+      <p class="explanation-interaction-hint"><strong>Cliquez sur un diagramme pour l’agrandir.</strong> Pour déplacer une note, cliquez sur un cercle pointillé ou faites-le glisser vers la note actuelle.</p>
       <section class="explanation-family" id="explanation-major-minor-panel" role="tabpanel" aria-labelledby="explanation-major-minor-tab" data-family="major-minor">
         <h3 class="chord-section-title">Majeur / mineur</h3>
-        <p class="chord-theory">Pour passer de majeur à mineur, la tierce majeure descend d’une case et devient mineure. La fondamentale et la quinte restent identiques.</p>
+        <p class="chord-theory">Pour passer de majeur à mineur, la tierce majeure descend d’une case. La fondamentale et la quinte restent identiques.</p>
         <div class="quality-tabs" role="group" aria-label="Forme majeure ou mineure">
           <button class="quality-tab explanation-quality" type="button" data-quality="" aria-pressed="true">Majeure</button>
           <button class="quality-tab explanation-quality" type="button" data-quality="m" aria-pressed="false">Mineure</button>
@@ -259,11 +252,11 @@
       <section class="explanation-family" id="explanation-seventh-panel" role="tabpanel" aria-labelledby="explanation-seventh-tab" data-family="seventh" hidden>
         <details class="explanation-theory" open>
           <summary>Explications</summary>
-          <p><strong>maj7 → 7 :</strong> la <span class="interval-seventh">7<sup>ème</sup></span> descend d’une case : majeure → mineure.</p>
-          <p><strong>7 → m7 :</strong> la <span class="interval-third">3<sup>ce</sup></span> descend d’une case : majeure → mineure.</p>
-          <p><strong>m7M :</strong> une <span class="interval-third">3<sup>ce</sup></span> mineure et une <span class="interval-seventh">7<sup>ème</sup></span> majeure.</p>
-          <p>La <span class="interval-seventh">7<sup>ème</sup> majeure</span> se trouve une case avant l’<span class="interval-fundamental">octave</span>.</p>
-          <p>La <span class="interval-fundamental">fondamentale</span> et la <span class="interval-fifth">quinte</span> ne changent pas.</p>
+          <p>Dans les accords suivants, la <span class="interval-fifth">5<sup>te</sup></span> est toujours juste.</p>
+          <p><strong>maj7 :</strong> <span class="interval-third">3<sup>ce</sup>M</span> et <span class="interval-seventh">7<sup>ème</sup>M</span>.</p>
+          <p><strong>7 :</strong> <span class="interval-third">3<sup>ce</sup>M</span> et <span class="interval-seventh">7<sup>ème</sup>m</span>.</p>
+          <p><strong>m7 :</strong> <span class="interval-third">3<sup>ce</sup>m</span> et <span class="interval-seventh">7<sup>ème</sup>m</span>.</p>
+          <p><strong>m7M :</strong> <span class="interval-third">3<sup>ce</sup>m</span> et <span class="interval-seventh">7<sup>ème</sup>M</span>.</p>
         </details>
         <div class="quality-tabs" role="group" aria-label="Forme d’accord">
           <button class="quality-tab explanation-quality" type="button" data-quality="maj7" aria-pressed="true">maj7</button>
@@ -291,11 +284,11 @@
       <section class="explanation-family" id="explanation-open-panel" role="tabpanel" aria-labelledby="explanation-open-tab" data-family="open" hidden>
         <details class="explanation-theory" open>
           <summary>Explications</summary>
-          <p><strong>Majeur → mineur :</strong> la <span class="interval-third">3<sup>ce</sup></span> descend d’une case : majeure → mineure.</p>
-          <p><strong>maj7 → 7 :</strong> la <span class="interval-seventh">7<sup>ème</sup></span> descend d’une case : majeure → mineure.</p>
-          <p><strong>7 → m7 :</strong> la <span class="interval-third">3<sup>ce</sup></span> descend d’une case : majeure → mineure.</p>
-          <p><strong>mMaj7 :</strong> une <span class="interval-third">3<sup>ce</sup></span> mineure et une <span class="interval-seventh">7<sup>ème</sup></span> majeure.</p>
+          <p><strong>Majeur → mineur :</strong> la <span class="interval-third">3<sup>ce</sup></span> descend d’une case.</p>
           <p>La <span class="interval-seventh">7<sup>ème</sup> majeure</span> se trouve une case avant l’<span class="interval-fundamental">octave</span>.</p>
+          <p><strong>maj7 → 7 :</strong> la <span class="interval-seventh">7<sup>ème</sup></span> descend d’une case.</p>
+          <p><strong>7 → m7 :</strong> la <span class="interval-third">3<sup>ce</sup></span> descend d’une case.</p>
+          <p><strong>mMaj7 :</strong> une <span class="interval-third">3<sup>ce</sup></span> mineure et une <span class="interval-seventh">7<sup>ème</sup></span> majeure.</p>
         </details>
         <p class="chord-theory">Choisissez une fondamentale, puis un accord ouvert. Utilisez les boutons pour les transitions qui déplacent plusieurs notes.</p>
         <div class="quality-tabs" id="explanation-open-roots" role="group" aria-label="Fondamentale de l’accord ouvert"></div>
@@ -320,13 +313,12 @@
           <input id="dialog-colorblind-mode" type="checkbox" autocomplete="off">
           Mode daltonien : repères par formes
         </label>
-        <p class="interval-shape-legend">Formes : rond = fondamentale, carré = tierce, triangle = quinte, losange = septième.</p>
       </div>
       <div id="expanded-chord"></div>
     </dialog>
   </main>
 
-  <script src="app.js?v=20261126-12"></script>
+  <script src="app.js?v=20261126-14"></script>
   <script>
     if ("serviceWorker" in navigator) {
       navigator.serviceWorker.register("./service-worker.js", { updateViaCache: "none" })

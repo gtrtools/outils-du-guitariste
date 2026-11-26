@@ -214,8 +214,6 @@ button:disabled { cursor: wait; opacity: .75; }
 }
 .interval-toggle { display: flex; align-items: center; gap: 8px; min-height: 36px; color: #e8d8b8; font-size: .82rem; font-weight: 650; cursor: pointer; }
 .interval-toggle input { flex: 0 0 17px; width: 17px; height: 17px; margin: 0; accent-color: var(--brass); }
-.interval-shape-legend { display: none; flex-basis: 100%; margin: 0 0 6px; color: var(--muted); font-size: .75rem; }
-body.colorblind-enabled .interval-shape-legend { display: block; }
 .position-tabs {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -252,6 +250,8 @@ body.colorblind-enabled .interval-shape-legend { display: block; }
   cursor: pointer;
 }
 .quality-tab[aria-selected="true"], .quality-tab[aria-pressed="true"] { border-color: var(--brass); background: #493923; color: #f3d48f; }
+.explanation-interaction-hint { margin: 0 0 16px; padding: 11px 14px; border-left: 3px solid var(--brass); border-radius: 0 8px 8px 0; background: #382b1c; color: var(--paper); font-size: .85rem; line-height: 1.5; }
+.explanation-interaction-hint strong { color: #f3d48f; }
 .explanation-family { margin: 20px 0; }
 .explanation-theory { margin: 0 0 14px; color: #e8d8b8; font-size: .88rem; line-height: 1.55; }
 .explanation-theory summary { padding: 6px 0; color: #f3d48f; font-weight: 700; cursor: pointer; }
@@ -332,15 +332,20 @@ body.intervals-enabled:not(.colorblind-enabled) .chord-card .diagram-labeled-ope
 .chord-description { min-height: 36px; margin: 3px 0 0; color: var(--muted); font-size: .76rem; }
 .chord-intervals { min-height: 20px; margin: 3px 0 0; color: #d7c6a5; font-size: .76rem; }
 .chord-intervals sup { font-size: .7em; line-height: 0; }
+.chord-formula sup { font-size: .7em; line-height: 0; }
+:is(body.intervals-enabled, body.colorblind-enabled) .chord-formula .interval-fundamental { color: var(--interval-fundamental); }
+:is(body.intervals-enabled, body.colorblind-enabled) .chord-formula .interval-third { color: var(--interval-third); }
+:is(body.intervals-enabled, body.colorblind-enabled) .chord-formula .interval-fifth { color: var(--interval-fifth); }
+:is(body.intervals-enabled, body.colorblind-enabled) .chord-formula .interval-seventh { color: var(--interval-seventh); }
 :is(body.intervals-enabled, .explanation) .chord-intervals .interval-fundamental { color: var(--interval-fundamental); }
 :is(body.intervals-enabled, .explanation) .chord-intervals .interval-third { color: var(--interval-third); }
 :is(body.intervals-enabled, .explanation) .chord-intervals .interval-fifth { color: var(--interval-fifth); }
 :is(body.intervals-enabled, .explanation) .chord-intervals .interval-seventh { color: var(--interval-seventh); }
-body.colorblind-enabled .chord-intervals span::before { display: inline-block; margin-right: 3px; color: currentColor; }
-body.colorblind-enabled .chord-intervals .interval-fundamental::before { content: "\25CF"; }
-body.colorblind-enabled .chord-intervals .interval-third::before { content: "\25A0"; }
-body.colorblind-enabled .chord-intervals .interval-fifth::before { content: "\25B2"; }
-body.colorblind-enabled .chord-intervals .interval-seventh::before { content: "\25C6"; }
+body.colorblind-enabled :is(.chord-intervals, .chord-formula) span::before { display: inline-block; margin-right: 3px; color: currentColor; }
+body.colorblind-enabled :is(.chord-intervals, .chord-formula) .interval-fundamental::before { content: "\25CF"; }
+body.colorblind-enabled :is(.chord-intervals, .chord-formula) .interval-third::before { content: "\25A0"; }
+body.colorblind-enabled :is(.chord-intervals, .chord-formula) .interval-fifth::before { content: "\25B2"; }
+body.colorblind-enabled :is(.chord-intervals, .chord-formula) .interval-seventh::before { content: "\25C6"; }
 .positions-grid { display: grid; grid-template-columns: minmax(0, 190px); justify-content: center; gap: 7px; width: 100%; margin-top: auto; padding-top: 12px; }
 .voicing-item { min-width: 0; padding: 7px 4px; border: 1px solid #57432e; border-radius: 8px; background: #211910; text-align: center; }
 .voicing-caption { color: #d7c6a5; font-size: .68rem; }

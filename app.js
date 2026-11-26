@@ -155,10 +155,6 @@ const barreE6Maj7Grid = document.querySelector("#barre-e6-maj7-grid");
 const barreA5Maj7Grid = document.querySelector("#barre-a5-maj7-grid");
 const barreE6M7Grid = document.querySelector("#barre-e6-m7-grid");
 const barreA5M7Grid = document.querySelector("#barre-a5-m7-grid");
-const openChordCount = document.querySelector("#open-chord-count");
-const openSeventhCount = document.querySelector("#open-seventh-count");
-const openMaj7Count = document.querySelector("#open-maj7-count");
-const openM7Count = document.querySelector("#open-m7-count");
 const openQualityTabs = [
   document.querySelector("#open-major-minor-tab"),
   document.querySelector("#open-seventh-tab"),
@@ -718,10 +714,6 @@ function renderOpenChords() {
   renderChordTemplates(barreA5Maj7Grid, barreMaj7M7Templates.filter(template => template.string === "A5" && template.label.endsWith("maj7")));
   renderChordTemplates(barreE6M7Grid, barreMaj7M7Templates.filter(template => template.string === "E6" && !template.label.endsWith("maj7")));
   renderChordTemplates(barreA5M7Grid, barreMaj7M7Templates.filter(template => template.string === "A5" && !template.label.endsWith("maj7")));
-  openChordCount.textContent = `${openChordTemplates.length} accords · ${openChordTemplates.length} positions`;
-  openSeventhCount.textContent = `${openSeventhTemplates.length} accords · ${openSeventhTemplates.length} positions`;
-  openMaj7Count.textContent = `${openMaj7Templates.length} accords · ${openMaj7Templates.length} positions`;
-  openM7Count.textContent = `${openM7Templates.length} accords · ${openM7Templates.length} positions`;
 }
 
 function renderChordSearch() {
@@ -1295,13 +1287,25 @@ button.addEventListener("click", () => {
 document.querySelectorAll(".home-action").forEach(action => {
   action.addEventListener("click", () => {
     const panel = document.getElementById(action.dataset.panelTarget);
+    history.pushState({ ...history.state, guitaristePanel: panel.id }, "");
     selectTool(panel);
     panel.focus();
   });
 });
 homeReturn.addEventListener("click", () => {
-  showHome();
-  homePanel.querySelector(".home-action").focus();
+  history.back();
+});
+window.addEventListener("popstate", event => {
+  const openDialog = document.querySelector("dialog[open]");
+  if (openDialog) openDialog.close();
+  const panel = appPanels.find(item => item.id === event.state?.guitaristePanel);
+  if (panel) {
+    selectTool(panel);
+    panel.focus();
+  } else {
+    showHome();
+    homePanel.querySelector(".home-action").focus();
+  }
 });
 chordSearch.addEventListener("input", renderChordSearch);
 positionTabs.forEach((tab, index) => {
@@ -1352,7 +1356,6 @@ colorblindModes.forEach(input => {
 drawTicks();
 setMode(mode);
 setLanguage("english");
-showHome();
 selectPositionTab(positionTabs[0]);
 selectQualityTab(openQualityTabs, openQualityPanels, openQualityTabs[0]);
 selectQualityTab(barreQualityTabs, barreQualityPanels, barreQualityTabs[0]);
@@ -1361,3 +1364,10 @@ renderOpenChords();
 initializeExplanationOpen();
 explanationFamilies.filter(family => family.dataset.family !== "open").forEach(family => renderExplanation(family));
 initializeExplanationDialogs();
+const initialPanel = appPanels.find(panel => panel.id === history.state?.guitaristePanel);
+if (initialPanel) {
+  selectTool(initialPanel);
+} else {
+  history.replaceState({ ...history.state, guitaristePanel: "home" }, "");
+  showHome();
+}
