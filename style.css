@@ -333,19 +333,19 @@ body.intervals-enabled:not(.colorblind-enabled) .chord-card .diagram-labeled-ope
 .chord-intervals { min-height: 20px; margin: 3px 0 0; color: #d7c6a5; font-size: .76rem; }
 .chord-intervals sup { font-size: .7em; line-height: 0; }
 .chord-formula sup { font-size: .7em; line-height: 0; }
-:is(body.intervals-enabled, body.colorblind-enabled) .chord-formula .interval-fundamental { color: var(--interval-fundamental); }
-:is(body.intervals-enabled, body.colorblind-enabled) .chord-formula .interval-third { color: var(--interval-third); }
-:is(body.intervals-enabled, body.colorblind-enabled) .chord-formula .interval-fifth { color: var(--interval-fifth); }
-:is(body.intervals-enabled, body.colorblind-enabled) .chord-formula .interval-seventh { color: var(--interval-seventh); }
+body.intervals-enabled .chord-formula .interval-fundamental { color: var(--interval-fundamental); }
+body.intervals-enabled .chord-formula .interval-third { color: var(--interval-third); }
+body.intervals-enabled .chord-formula .interval-fifth { color: var(--interval-fifth); }
+body.intervals-enabled .chord-formula .interval-seventh { color: var(--interval-seventh); }
 :is(body.intervals-enabled, .explanation) .chord-intervals .interval-fundamental { color: var(--interval-fundamental); }
 :is(body.intervals-enabled, .explanation) .chord-intervals .interval-third { color: var(--interval-third); }
 :is(body.intervals-enabled, .explanation) .chord-intervals .interval-fifth { color: var(--interval-fifth); }
 :is(body.intervals-enabled, .explanation) .chord-intervals .interval-seventh { color: var(--interval-seventh); }
-body.colorblind-enabled :is(.chord-intervals, .chord-formula) span::before { display: inline-block; margin-right: 3px; color: currentColor; }
-body.colorblind-enabled :is(.chord-intervals, .chord-formula) .interval-fundamental::before { content: "\25CF"; }
-body.colorblind-enabled :is(.chord-intervals, .chord-formula) .interval-third::before { content: "\25A0"; }
-body.colorblind-enabled :is(.chord-intervals, .chord-formula) .interval-fifth::before { content: "\25B2"; }
-body.colorblind-enabled :is(.chord-intervals, .chord-formula) .interval-seventh::before { content: "\25C6"; }
+body.colorblind-enabled :is(.chord-intervals, .chord-formula, .explanation-theory) span::before { display: inline-block; margin-right: 3px; color: currentColor; }
+body.colorblind-enabled :is(.chord-intervals, .chord-formula, .explanation-theory) .interval-fundamental::before { content: "\25CF"; }
+body.colorblind-enabled :is(.chord-intervals, .chord-formula, .explanation-theory) .interval-third::before { content: "\25A0"; }
+body.colorblind-enabled :is(.chord-intervals, .chord-formula, .explanation-theory) .interval-fifth::before { content: "\25B2"; }
+body.colorblind-enabled :is(.chord-intervals, .chord-formula, .explanation-theory) .interval-seventh::before { content: "\25C6"; }
 .positions-grid { display: grid; grid-template-columns: minmax(0, 190px); justify-content: center; gap: 7px; width: 100%; margin-top: auto; padding-top: 12px; }
 .voicing-item { min-width: 0; padding: 7px 4px; border: 1px solid #57432e; border-radius: 8px; background: #211910; text-align: center; }
 .voicing-caption { color: #d7c6a5; font-size: .68rem; }
