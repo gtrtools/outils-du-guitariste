@@ -3,8 +3,11 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#10120f">
+  <meta name="theme-color" content="#17130f">
   <title>Outils du guitariste · Accordeur et accords</title>
+  <link rel="manifest" href="./manifest.json">
+  <link rel="icon" type="image/png" sizes="192x192" href="./assets/icon-192.png">
+  <link rel="apple-touch-icon" href="./assets/icon-192.png">
   <!-- Changer la version des fichiers modifiés à chaque mise en ligne. -->
   <link rel="stylesheet" href="style.css?v=20261126-11">
 </head>
@@ -312,5 +315,11 @@
   </main>
 
   <script src="app.js?v=20261126-10"></script>
+  <script>
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.register("./service-worker.js", { updateViaCache: "none" })
+        .catch(error => console.error("Impossible d’activer le mode hors connexion :", error));
+    }
+  </script>
 </body>
 </html>
