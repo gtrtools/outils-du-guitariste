@@ -311,11 +311,22 @@
     </section>
     <dialog class="chord-dialog" id="chord-dialog" aria-label="Accord agrandi">
       <button class="dialog-close" id="close-chord-dialog" type="button">Fermer</button>
+      <div class="interval-controls">
+        <label class="interval-toggle">
+          <input id="dialog-show-intervals" type="checkbox" autocomplete="off">
+          Afficher les intervalles en couleur
+        </label>
+        <label class="interval-toggle">
+          <input id="dialog-colorblind-mode" type="checkbox" autocomplete="off">
+          Mode daltonien : repères par formes
+        </label>
+        <p class="interval-shape-legend">Formes : rond = fondamentale, carré = tierce, triangle = quinte, losange = septième.</p>
+      </div>
       <div id="expanded-chord"></div>
     </dialog>
   </main>
 
-  <script src="app.js?v=20261126-11"></script>
+  <script src="app.js?v=20261126-12"></script>
   <script>
     if ("serviceWorker" in navigator) {
       navigator.serviceWorker.register("./service-worker.js", { updateViaCache: "none" })

@@ -186,7 +186,7 @@ const barreQualityPanels = [
 const chordDialog = document.querySelector("#chord-dialog");
 const expandedChord = document.querySelector("#expanded-chord");
 const closeChordDialog = document.querySelector("#close-chord-dialog");
-const showIntervals = document.querySelector("#show-intervals");
+const intervalModes = [...document.querySelectorAll("#show-intervals, #dialog-show-intervals")];
 const chordSearch = document.querySelector("#chord-search");
 const chordSuggestions = document.querySelector("#chord-suggestions");
 const chordSuggestionButtons = document.querySelector("#chord-suggestion-buttons");
@@ -194,7 +194,7 @@ const chordSearchResults = document.querySelector("#chord-search-results");
 const chordSearchStatus = document.querySelector("#chord-search-status");
 const chordSearchGrid = document.querySelector("#chord-search-grid");
 const chordBrowse = document.querySelector("#chord-browse");
-const colorblindModes = [...document.querySelectorAll("#colorblind-mode, #explanation-colorblind-mode")];
+const colorblindModes = [...document.querySelectorAll("#colorblind-mode, #explanation-colorblind-mode, #dialog-colorblind-mode")];
 const explanationTabs = [...document.querySelectorAll(".explanation-tab")];
 const explanationFamilies = [...document.querySelectorAll(".explanation-family")];
 const explanationQualities = [...document.querySelectorAll(".explanation-quality")];
@@ -1334,9 +1334,14 @@ closeChordDialog.addEventListener("click", () => chordDialog.close());
 chordDialog.addEventListener("click", event => {
   if (event.target === chordDialog) chordDialog.close();
 });
-showIntervals.addEventListener("change", () => {
-  document.body.classList.toggle("intervals-enabled", showIntervals.checked);
+intervalModes.forEach(input => {
+  input.checked = intervalModes[0].checked;
+  input.addEventListener("change", () => {
+    intervalModes.forEach(item => { item.checked = input.checked; });
+    document.body.classList.toggle("intervals-enabled", input.checked);
+  });
 });
+document.body.classList.toggle("intervals-enabled", intervalModes[0].checked);
 colorblindModes.forEach(input => {
   input.checked = false;
   input.addEventListener("change", () => {
