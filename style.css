@@ -40,7 +40,7 @@ header p { margin: 0; color: var(--muted); font-size: .95rem; }
 
 .app-tabs {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 7px;
   max-width: 570px;
   margin: 0 auto 15px;
@@ -226,9 +226,23 @@ button:disabled { cursor: wait; opacity: .75; }
   font-weight: 500;
 }
 .dictionary-intro { margin: 7px 0 20px; color: var(--muted); font-size: .9rem; }
-.interval-toggle { display: flex; align-items: center; gap: 8px; margin: 0 0 16px; color: #e8d8b8; font-size: .82rem; font-weight: 650; }
-.interval-toggle input { width: 17px; height: 17px; margin: 0; accent-color: var(--brass); }
-.interval-shape-legend { display: none; margin: -8px 0 16px 25px; color: var(--muted); font-size: .75rem; }
+.interval-controls {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+  display: flex;
+  flex-wrap: wrap;
+  column-gap: 20px;
+  margin: 0 0 16px;
+  padding: 6px 12px;
+  border: 1px solid #654d31;
+  border-radius: 12px;
+  background: #211a13;
+  box-shadow: 0 4px 12px #0006;
+}
+.interval-toggle { display: flex; align-items: center; gap: 8px; min-height: 36px; color: #e8d8b8; font-size: .82rem; font-weight: 650; cursor: pointer; }
+.interval-toggle input { flex: 0 0 17px; width: 17px; height: 17px; margin: 0; accent-color: var(--brass); }
+.interval-shape-legend { display: none; flex-basis: 100%; margin: 0 0 6px; color: var(--muted); font-size: .75rem; }
 body.colorblind-enabled .interval-shape-legend { display: block; }
 .position-tabs {
   display: grid;
@@ -265,7 +279,30 @@ body.colorblind-enabled .interval-shape-legend { display: block; }
   font-weight: 700;
   cursor: pointer;
 }
-.quality-tab[aria-selected="true"] { border-color: var(--brass); background: #493923; color: #f3d48f; }
+.quality-tab[aria-selected="true"], .quality-tab[aria-pressed="true"] { border-color: var(--brass); background: #493923; color: #f3d48f; }
+.explanation-family { margin: 20px 0; }
+.explanation-theory { margin: 0 0 14px; color: #e8d8b8; font-size: .88rem; line-height: 1.55; }
+.explanation-theory summary { padding: 6px 0; color: #f3d48f; font-weight: 700; cursor: pointer; }
+.explanation-theory[open] summary { margin-bottom: 6px; }
+.explanation-theory p { margin: 0 0 4px; }
+.explanation-theory sup { font-size: .7em; line-height: 0; }
+.explanation-theory .interval-fundamental { color: var(--interval-fundamental); }
+.explanation-theory .interval-third { color: var(--interval-third); }
+.explanation-theory .interval-fifth { color: var(--interval-fifth); }
+.explanation-theory .interval-seventh { color: var(--interval-seventh); }
+.explanation-comparison { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.explanation-voice { min-width: 0; }
+.explanation-voice .chord-title { margin: 0 0 8px; font-size: clamp(1rem, 3vw, 1.3rem); }
+.explanation-diagram { width: min(100%, 260px); }
+.explanation-diagram .chord-diagram { width: min(100%, 240px); }
+.explanation-voice .chord-intervals { margin: 10px 0; font-size: .9rem; }
+.explanation-diagram .chord-diagram .diagram-changed { stroke: #fff; stroke-width: 2; }
+.explanation-diagram .chord-diagram .diagram-previous { fill: none; stroke: #fff; stroke-width: 1.4; stroke-dasharray: 2 2; }
+.explanation-diagram .chord-diagram .diagram-unavailable { opacity: .35; }
+.explanation-diagram .chord-diagram .diagram-alternative { cursor: pointer; touch-action: none; }
+.explanation-diagram .chord-diagram .diagram-alternative:focus-visible .diagram-previous { stroke: var(--brass); stroke-width: 3; }
+.explanation-diagram .chord-diagram .diagram-hit-area { fill: transparent; }
+.explanation-diagram .chord-diagram .diagram-movement { fill: none; stroke: #fff; stroke-width: 1.2; }
 .search-label { display: block; margin-bottom: 7px; color: #e8d8b8; font-size: .82rem; font-weight: 700; }
 .chord-search {
   width: 100%;
@@ -304,10 +341,10 @@ body.colorblind-enabled .interval-shape-legend { display: block; }
 .chord-description { min-height: 36px; margin: 3px 0 0; color: var(--muted); font-size: .76rem; }
 .chord-intervals { min-height: 20px; margin: 3px 0 0; color: #d7c6a5; font-size: .76rem; }
 .chord-intervals sup { font-size: .7em; line-height: 0; }
-body.intervals-enabled .chord-intervals .interval-fundamental { color: var(--interval-fundamental); }
-body.intervals-enabled .chord-intervals .interval-third { color: var(--interval-third); }
-body.intervals-enabled .chord-intervals .interval-fifth { color: var(--interval-fifth); }
-body.intervals-enabled .chord-intervals .interval-seventh { color: var(--interval-seventh); }
+:is(body.intervals-enabled, .explanation) .chord-intervals .interval-fundamental { color: var(--interval-fundamental); }
+:is(body.intervals-enabled, .explanation) .chord-intervals .interval-third { color: var(--interval-third); }
+:is(body.intervals-enabled, .explanation) .chord-intervals .interval-fifth { color: var(--interval-fifth); }
+:is(body.intervals-enabled, .explanation) .chord-intervals .interval-seventh { color: var(--interval-seventh); }
 body.colorblind-enabled .chord-intervals span::before { display: inline-block; margin-right: 3px; color: currentColor; }
 body.colorblind-enabled .chord-intervals .interval-fundamental::before { content: "\25CF"; }
 body.colorblind-enabled .chord-intervals .interval-third::before { content: "\25A0"; }
@@ -320,6 +357,7 @@ body.colorblind-enabled .chord-intervals .interval-seventh::before { content: "\
 .chord-diagram .diagram-line { stroke: #bda77f; stroke-width: 1; }
 .chord-diagram .diagram-nut { stroke: #e8d8b8; stroke-width: 3; }
 .chord-diagram .diagram-dot { fill: #d3aa62; stroke: #f0d398; stroke-width: 1; }
+body:not(.intervals-enabled):not(.colorblind-enabled) .chord-diagram .diagram-barre-note { display: none; }
 .chord-diagram .diagram-shape { display: none; }
 .chord-diagram .diagram-shape:not(.diagram-open-shape) { fill: #d3aa62; stroke: #f0d398; stroke-width: 1; }
 .chord-diagram .diagram-open-shape { fill: none; stroke: #d8c6a5; stroke-width: 1.6; }
@@ -327,26 +365,26 @@ body.colorblind-enabled .chord-diagram .diagram-dot { display: none; }
 body.colorblind-enabled .chord-diagram .diagram-shape:not(.diagram-open-shape) { display: block; }
 body.colorblind-enabled .chord-diagram .diagram-open { display: none; }
 body.colorblind-enabled .chord-diagram .diagram-open-shape { display: block; }
-body.intervals-enabled .chord-diagram .diagram-dot.interval-fundamental { fill: var(--interval-fundamental); }
-body.intervals-enabled .chord-diagram .diagram-dot.interval-third { fill: var(--interval-third); }
-body.intervals-enabled .chord-diagram .diagram-dot.interval-fifth { fill: var(--interval-fifth); }
-body.intervals-enabled .chord-diagram .diagram-dot.interval-seventh { fill: var(--interval-seventh); }
-body.intervals-enabled .chord-diagram .diagram-shape.interval-fundamental:not(.diagram-open-shape) { fill: var(--interval-fundamental); }
-body.intervals-enabled .chord-diagram .diagram-shape.interval-third:not(.diagram-open-shape) { fill: var(--interval-third); }
-body.intervals-enabled .chord-diagram .diagram-shape.interval-fifth:not(.diagram-open-shape) { fill: var(--interval-fifth); }
-body.intervals-enabled .chord-diagram .diagram-shape.interval-seventh:not(.diagram-open-shape) { fill: var(--interval-seventh); }
+:is(body.intervals-enabled, .explanation) .chord-diagram .diagram-dot.interval-fundamental { fill: var(--interval-fundamental); }
+:is(body.intervals-enabled, .explanation) .chord-diagram .diagram-dot.interval-third { fill: var(--interval-third); }
+:is(body.intervals-enabled, .explanation) .chord-diagram .diagram-dot.interval-fifth { fill: var(--interval-fifth); }
+:is(body.intervals-enabled, .explanation) .chord-diagram .diagram-dot.interval-seventh { fill: var(--interval-seventh); }
+:is(body.intervals-enabled, .explanation) .chord-diagram .diagram-shape.interval-fundamental:not(.diagram-open-shape) { fill: var(--interval-fundamental); }
+:is(body.intervals-enabled, .explanation) .chord-diagram .diagram-shape.interval-third:not(.diagram-open-shape) { fill: var(--interval-third); }
+:is(body.intervals-enabled, .explanation) .chord-diagram .diagram-shape.interval-fifth:not(.diagram-open-shape) { fill: var(--interval-fifth); }
+:is(body.intervals-enabled, .explanation) .chord-diagram .diagram-shape.interval-seventh:not(.diagram-open-shape) { fill: var(--interval-seventh); }
 .chord-diagram .diagram-barre { stroke: #d3aa62; stroke-width: 8; stroke-linecap: round; }
 .chord-diagram .diagram-bass { fill: #d3aa62; stroke: #fff0c9; stroke-width: 2; }
-body.intervals-enabled .chord-diagram .diagram-bass { fill: var(--interval-fundamental); }
+:is(body.intervals-enabled, .explanation) .chord-diagram .diagram-bass { fill: var(--interval-fundamental); }
 .chord-diagram .diagram-muted, .chord-diagram .diagram-open { fill: #d8c6a5; font: 12px ui-sans-serif, sans-serif; }
-body.intervals-enabled .chord-diagram .diagram-open.interval-fundamental { fill: var(--interval-fundamental); }
-body.intervals-enabled .chord-diagram .diagram-open.interval-third { fill: var(--interval-third); }
-body.intervals-enabled .chord-diagram .diagram-open.interval-fifth { fill: var(--interval-fifth); }
-body.intervals-enabled .chord-diagram .diagram-open.interval-seventh { fill: var(--interval-seventh); }
-body.intervals-enabled .chord-diagram .diagram-open-shape.interval-fundamental { stroke: var(--interval-fundamental); }
-body.intervals-enabled .chord-diagram .diagram-open-shape.interval-third { stroke: var(--interval-third); }
-body.intervals-enabled .chord-diagram .diagram-open-shape.interval-fifth { stroke: var(--interval-fifth); }
-body.intervals-enabled .chord-diagram .diagram-open-shape.interval-seventh { stroke: var(--interval-seventh); }
+:is(body.intervals-enabled, .explanation) .chord-diagram .diagram-open.interval-fundamental { fill: var(--interval-fundamental); }
+:is(body.intervals-enabled, .explanation) .chord-diagram .diagram-open.interval-third { fill: var(--interval-third); }
+:is(body.intervals-enabled, .explanation) .chord-diagram .diagram-open.interval-fifth { fill: var(--interval-fifth); }
+:is(body.intervals-enabled, .explanation) .chord-diagram .diagram-open.interval-seventh { fill: var(--interval-seventh); }
+:is(body.intervals-enabled, .explanation) .chord-diagram .diagram-open-shape.interval-fundamental { stroke: var(--interval-fundamental); }
+:is(body.intervals-enabled, .explanation) .chord-diagram .diagram-open-shape.interval-third { stroke: var(--interval-third); }
+:is(body.intervals-enabled, .explanation) .chord-diagram .diagram-open-shape.interval-fifth { stroke: var(--interval-fifth); }
+:is(body.intervals-enabled, .explanation) .chord-diagram .diagram-open-shape.interval-seventh { stroke: var(--interval-seventh); }
 .chord-diagram .diagram-string-label { fill: #b6a58c; font: 9px ui-sans-serif, sans-serif; }
 .chord-dialog {
   width: min(92vw, 680px);

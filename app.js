@@ -91,6 +91,20 @@ const openSeventhTemplates = [
   { label: "G7", voicing: [3, 2, 0, 0, 0, 1] },
   { label: "B7", voicing: [null, 2, 1, 2, 0, 2] }
 ];
+const openMaj7Templates = [
+  { label: "Cmaj7", voicing: [null, 3, 2, 0, 0, 0] },
+  { label: "Amaj7", voicing: [null, 0, 2, 1, 2, 0] },
+  { label: "Dmaj7", voicing: [null, null, 0, 2, 2, 2], barre: { fret: 2, from: 3, to: 5, hideDots: true } },
+  { label: "Emaj7", voicing: [0, 2, 1, 1, 0, 0] },
+  { label: "Fmaj7", voicing: [null, null, 3, 2, 1, 0] },
+  { label: "Gmaj7", voicing: [3, 2, 0, 0, 0, 2] }
+];
+const openM7Templates = [
+  { label: "Am7", voicing: [null, 0, 2, 0, 1, 0] },
+  { label: "Dm7", voicing: [null, null, 0, 2, 1, 1], barre: { fret: 1, from: 4, to: 5, hideDots: true } },
+  { label: "Em7", voicing: [0, 2, 0, 0, 0, 0] },
+  { label: "Bm7", voicing: [null, 2, 0, 2, 0, 2] }
+];
 const barreMajorMinorTemplates = [
   { label: "F", title: "Forme majeure", string: "E6", voicing: [1, 3, 3, 2, 1, 1], caption: "Forme mobile", positionLabel: "Forme majeure mobile, fondamentale sur E6", barre: { fret: 1, from: 0, to: 5 }, bassString: 0 },
   { label: "Fm", title: "Forme mineure", string: "E6", voicing: [1, 3, 3, 1, 1, 1], caption: "Forme mobile", positionLabel: "Forme mineure mobile, fondamentale sur E6", barre: { fret: 1, from: 0, to: 5 }, bassString: 0 },
@@ -100,6 +114,16 @@ const barreMajorMinorTemplates = [
 const barreSeventhTemplates = [
   { label: "F7", title: "Forme de 7e", string: "E6", voicing: [1, 3, 1, 2, 1, 1], caption: "Forme mobile", positionLabel: "Forme de 7e mobile, fondamentale sur E6", barre: { fret: 1, from: 0, to: 5 }, bassString: 0 },
   { label: "B♭7", title: "Forme de 7e", string: "A5", voicing: [null, 1, 3, 1, 3, 1], caption: "Forme mobile", positionLabel: "Forme de 7e mobile, fondamentale sur A5", barre: { fret: 1, from: 1, to: 5 }, bassString: 1 }
+];
+const barreMaj7M7Templates = [
+  { label: "Fmaj7", title: "Forme maj7", string: "E6", voicing: [1, 3, 2, 2, 1, 1], caption: "Forme mobile", positionLabel: "Forme maj7 mobile, fondamentale sur E6", barre: { fret: 1, from: 0, to: 5 }, bassString: 0 },
+  { label: "Fm7", title: "Forme m7", string: "E6", voicing: [1, 3, 1, 1, 1, 1], caption: "Forme mobile", positionLabel: "Forme m7 mobile, fondamentale sur E6", barre: { fret: 1, from: 0, to: 5 }, bassString: 0 },
+  { label: "B♭maj7", title: "Forme maj7", string: "A5", voicing: [null, 1, 3, 2, 3, 1], caption: "Forme mobile", positionLabel: "Forme maj7 mobile, fondamentale sur A5", barre: { fret: 1, from: 1, to: 5 }, bassString: 1 },
+  { label: "B♭m7", title: "Forme m7", string: "A5", voicing: [null, 1, 3, 1, 2, 1], caption: "Forme mobile", positionLabel: "Forme m7 mobile, fondamentale sur A5", barre: { fret: 1, from: 1, to: 5 }, bassString: 1 }
+];
+const explanationMinorMajorSeventhTemplates = [
+  { label: "FmMaj7", voicing: [1, 3, 2, 1, 1, 1], barre: { fret: 1, from: 0, to: 5 }, bassString: 0 },
+  { label: "B♭mMaj7", voicing: [null, 1, 3, 2, 2, 1], barre: { fret: 1, from: 1, to: 5 }, bassString: 1 }
 ];
 const noteDisplay = document.querySelector("#note");
 const frequencyDisplay = document.querySelector("#frequency");
@@ -112,7 +136,7 @@ const tuningModeButtons = [...document.querySelectorAll("#chromatic-mode, #guita
 const languageButtons = [...document.querySelectorAll("#english-language, #french-language")];
 const ticksDisplay = document.querySelector("#ticks");
 const appTabs = [...document.querySelectorAll(".app-tab")];
-const appPanels = [document.querySelector("#tuner-panel"), document.querySelector("#chords-panel")];
+const appPanels = [document.querySelector("#tuner-panel"), document.querySelector("#chords-panel"), document.querySelector("#explanation-panel")];
 const positionTabs = [...document.querySelectorAll(".position-tab")];
 const positionPanels = [
   document.querySelector("#open-positions-panel"),
@@ -120,33 +144,67 @@ const positionPanels = [
 ];
 const openChordGrid = document.querySelector("#open-chord-grid");
 const openSeventhGrid = document.querySelector("#open-seventh-grid");
+const openMaj7Grid = document.querySelector("#open-maj7-grid");
+const openM7Grid = document.querySelector("#open-m7-grid");
 const barreE6MajorMinorGrid = document.querySelector("#barre-e6-major-minor-grid");
 const barreA5MajorMinorGrid = document.querySelector("#barre-a5-major-minor-grid");
 const barreE6SeventhGrid = document.querySelector("#barre-e6-seventh-grid");
 const barreA5SeventhGrid = document.querySelector("#barre-a5-seventh-grid");
+const barreE6Maj7Grid = document.querySelector("#barre-e6-maj7-grid");
+const barreA5Maj7Grid = document.querySelector("#barre-a5-maj7-grid");
+const barreE6M7Grid = document.querySelector("#barre-e6-m7-grid");
+const barreA5M7Grid = document.querySelector("#barre-a5-m7-grid");
 const openChordCount = document.querySelector("#open-chord-count");
 const openSeventhCount = document.querySelector("#open-seventh-count");
+const openMaj7Count = document.querySelector("#open-maj7-count");
+const openM7Count = document.querySelector("#open-m7-count");
 const openQualityTabs = [
   document.querySelector("#open-major-minor-tab"),
-  document.querySelector("#open-seventh-tab")
+  document.querySelector("#open-seventh-tab"),
+  document.querySelector("#open-maj7-tab"),
+  document.querySelector("#open-m7-tab")
 ];
 const openQualityPanels = [
   document.querySelector("#open-major-minor-panel"),
-  document.querySelector("#open-seventh-panel")
+  document.querySelector("#open-seventh-panel"),
+  document.querySelector("#open-maj7-panel"),
+  document.querySelector("#open-m7-panel")
 ];
 const barreQualityTabs = [
   document.querySelector("#barre-major-minor-tab"),
-  document.querySelector("#barre-seventh-tab")
+  document.querySelector("#barre-seventh-tab"),
+  document.querySelector("#barre-maj7-tab"),
+  document.querySelector("#barre-m7-tab")
 ];
 const barreQualityPanels = [
   document.querySelector("#barre-major-minor-panel"),
-  document.querySelector("#barre-seventh-panel")
+  document.querySelector("#barre-seventh-panel"),
+  document.querySelector("#barre-maj7-panel"),
+  document.querySelector("#barre-m7-panel")
 ];
 const chordDialog = document.querySelector("#chord-dialog");
 const expandedChord = document.querySelector("#expanded-chord");
 const closeChordDialog = document.querySelector("#close-chord-dialog");
 const showIntervals = document.querySelector("#show-intervals");
-const colorblindMode = document.querySelector("#colorblind-mode");
+const colorblindModes = [...document.querySelectorAll("#colorblind-mode, #explanation-colorblind-mode")];
+const explanationTabs = [...document.querySelectorAll(".explanation-tab")];
+const explanationFamilies = [...document.querySelectorAll(".explanation-family")];
+const explanationQualities = [...document.querySelectorAll(".explanation-quality")];
+const explanationSelections = { "major-minor": "", seventh: "maj7", open: "" };
+const explanationQualityLabels = { "": "majeure", m: "mineure", "7": "7", maj7: "maj7", m7: "m7", mMaj7: "m7M" };
+const explanationOpenMinorMajorSeventhTemplates = [
+  { label: "EmMaj7", voicing: [0, 2, 1, 0, 0, 0] },
+  { label: "AmMaj7", voicing: [null, 0, 2, 1, 1, 0] },
+  { label: "DmMaj7", voicing: [null, null, 0, 2, 2, 1] }
+];
+const explanationOpenTemplates = [
+  ...openChordTemplates, ...openSeventhTemplates, ...openMaj7Templates.filter(template => template.label !== "Fmaj7"),
+  ...openM7Templates, ...explanationOpenMinorMajorSeventhTemplates
+];
+const explanationOpenQualityOrder = ["", "m", "7", "maj7", "m7", "mMaj7"];
+const explanationOpenRoots = document.querySelector("#explanation-open-roots");
+const explanationOpenQualities = document.querySelector("#explanation-open-qualities");
+let explanationOpenRoot = "D";
 let mode = "chromatic";
 let language = "english";
 let audioContext;
@@ -206,7 +264,7 @@ function selectTab(selectedTab) {
   appPanels.forEach(panel => {
     panel.hidden = panel.id !== selectedTab.getAttribute("aria-controls");
   });
-  if (selectedTab.id === "chords-tab" && stream) stopTuner();
+  if (selectedTab.id !== "tuner-tab" && stream) stopTuner();
 }
 
 function selectPositionTab(selectedTab) {
@@ -356,7 +414,7 @@ function chordIntervalClass(chord, stringIndex, fret) {
   if (interval === 0) return "interval-fundamental";
   if (interval === 3 || interval === 4) return "interval-third";
   if (interval === 7) return "interval-fifth";
-  if (interval === 10) return "interval-seventh";
+  if (interval === 10 || interval === 11) return "interval-seventh";
   return "interval-other";
 }
 
@@ -386,7 +444,7 @@ function createIntervalShape(intervalClass, x, y, open = false) {
   });
 }
 
-function createChordDiagram(chord, voicing, chordLabel, positionLabel, barre = null, bassString = null) {
+function createChordDiagram(chord, voicing, chordLabel, positionLabel, barre = null, bassString = null, changedStrings = []) {
   const svg = createSvgElement("svg", {
     class: "chord-diagram",
     viewBox: "0 0 124 146",
@@ -434,11 +492,15 @@ function createChordDiagram(chord, voicing, chordLabel, positionLabel, barre = n
         x, y: 15, "text-anchor": "middle",
         class: fret === null
           ? "diagram-muted"
-          : `diagram-open ${intervalClass}`
+          : `diagram-open ${intervalClass}${changedStrings.includes(string) ? " diagram-changed" : ""}`
       });
       marker.textContent = fret === null ? "×" : "○";
       svg.appendChild(marker);
-      if (fret === 0) svg.appendChild(createIntervalShape(intervalClass, x, 15, true));
+      if (fret === 0) {
+        const shape = createIntervalShape(intervalClass, x, 15, true);
+        if (changedStrings.includes(string)) shape.classList.add("diagram-changed");
+        svg.appendChild(shape);
+      }
     } else {
       const intervalClass = chordIntervalClass(chord, string, fret);
       const y = 22 + (fret - firstFret + 0.5) * 18;
@@ -446,9 +508,11 @@ function createChordDiagram(chord, voicing, chordLabel, positionLabel, barre = n
         cx: x,
         cy: y,
         r: 5.5,
-        class: `diagram-dot ${intervalClass}`
+        class: `diagram-dot ${intervalClass}${barre && barre.hideDots && fret === barre.fret && string >= barre.from && string <= barre.to ? " diagram-barre-note" : ""}${changedStrings.includes(string) ? " diagram-changed" : ""}`
       }));
-      svg.appendChild(createIntervalShape(intervalClass, x, y));
+      const shape = createIntervalShape(intervalClass, x, y);
+      if (changedStrings.includes(string)) shape.classList.add("diagram-changed");
+      svg.appendChild(shape);
     }
     const stringLabel = createSvgElement("text", {
       x, y: 131, "text-anchor": "middle", class: "diagram-string-label"
@@ -541,7 +605,10 @@ function createChordIntervals(chord) {
   const formulas = {
     "": [["F", "", "", "fundamental"], ["3", "ce", "M", "third"], ["5", "te", "J", "fifth"]],
     m: [["F", "", "", "fundamental"], ["3", "ce", "m", "third"], ["5", "te", "J", "fifth"]],
-    "7": [["F", "", "", "fundamental"], ["3", "ce", "M", "third"], ["5", "te", "J", "fifth"], ["7", "ème", "m", "seventh"]]
+    "7": [["F", "", "", "fundamental"], ["3", "ce", "M", "third"], ["5", "te", "J", "fifth"], ["7", "ème", "m", "seventh"]],
+    maj7: [["F", "", "", "fundamental"], ["3", "ce", "M", "third"], ["5", "te", "J", "fifth"], ["7", "ème", "M", "seventh"]],
+    m7: [["F", "", "", "fundamental"], ["3", "ce", "m", "third"], ["5", "te", "J", "fifth"], ["7", "ème", "m", "seventh"]],
+    mMaj7: [["F", "", "", "fundamental"], ["3", "ce", "m", "third"], ["5", "te", "J", "fifth"], ["7", "ème", "M", "seventh"]]
   };
   const paragraph = document.createElement("p");
   paragraph.className = "chord-intervals";
@@ -564,18 +631,245 @@ function createChordIntervals(chord) {
 function renderOpenChords() {
   openChordGrid.replaceChildren();
   openSeventhGrid.replaceChildren();
+  openMaj7Grid.replaceChildren();
+  openM7Grid.replaceChildren();
   barreE6MajorMinorGrid.replaceChildren();
   barreA5MajorMinorGrid.replaceChildren();
   barreE6SeventhGrid.replaceChildren();
   barreA5SeventhGrid.replaceChildren();
+  barreE6Maj7Grid.replaceChildren();
+  barreA5Maj7Grid.replaceChildren();
+  barreE6M7Grid.replaceChildren();
+  barreA5M7Grid.replaceChildren();
   renderChordTemplates(openChordGrid, openChordTemplates);
   renderChordTemplates(openSeventhGrid, openSeventhTemplates);
+  renderChordTemplates(openMaj7Grid, openMaj7Templates);
+  renderChordTemplates(openM7Grid, openM7Templates);
   renderChordTemplates(barreE6MajorMinorGrid, barreMajorMinorTemplates.filter(template => template.string === "E6"));
   renderChordTemplates(barreA5MajorMinorGrid, barreMajorMinorTemplates.filter(template => template.string === "A5"));
   renderChordTemplates(barreE6SeventhGrid, barreSeventhTemplates.filter(template => template.string === "E6"));
   renderChordTemplates(barreA5SeventhGrid, barreSeventhTemplates.filter(template => template.string === "A5"));
+  renderChordTemplates(barreE6Maj7Grid, barreMaj7M7Templates.filter(template => template.string === "E6" && template.label.endsWith("maj7")));
+  renderChordTemplates(barreA5Maj7Grid, barreMaj7M7Templates.filter(template => template.string === "A5" && template.label.endsWith("maj7")));
+  renderChordTemplates(barreE6M7Grid, barreMaj7M7Templates.filter(template => template.string === "E6" && !template.label.endsWith("maj7")));
+  renderChordTemplates(barreA5M7Grid, barreMaj7M7Templates.filter(template => template.string === "A5" && !template.label.endsWith("maj7")));
   openChordCount.textContent = `${openChordTemplates.length} accords · ${openChordTemplates.length} positions`;
   openSeventhCount.textContent = `${openSeventhTemplates.length} accords · ${openSeventhTemplates.length} positions`;
+  openMaj7Count.textContent = `${openMaj7Templates.length} accords · ${openMaj7Templates.length} positions`;
+  openM7Count.textContent = `${openM7Templates.length} accords · ${openM7Templates.length} positions`;
+}
+
+function explanationTemplate(string, quality) {
+  const root = string === "E6" ? "F" : "B♭";
+  return [...barreMajorMinorTemplates, ...barreSeventhTemplates, ...barreMaj7M7Templates, ...explanationMinorMajorSeventhTemplates].find(template => template.label === `${root}${quality}`);
+}
+
+function explanationOpenTemplate(quality) {
+  return explanationOpenTemplates.find(template => template.label === `${explanationOpenRoot}${quality}`);
+}
+
+function explanationFretY(fret) {
+  return fret === 0 ? 15 : 22 + (fret - 0.5) * 18;
+}
+
+function renderExplanationVoice(voice, explanationQuality, previousQuality) {
+  const family = voice.closest(".explanation-family");
+  const isOpen = family.dataset.family === "open";
+  const explanationString = voice.dataset.string;
+  const findTemplate = quality => isOpen ? explanationOpenTemplate(quality) : explanationTemplate(explanationString, quality);
+  const template = findTemplate(explanationQuality);
+  const chord = chords.find(candidate => candidate.label === template.label);
+  const previous = previousQuality === null ? null : findTemplate(previousQuality);
+  const changedStrings = previous
+    ? template.voicing.flatMap((fret, index) => fret !== previous.voicing[index] ? [index] : [])
+    : [];
+  const qualityLabel = explanationQualityLabels[explanationQuality];
+  const diagram = createChordDiagram(
+    chord, template.voicing, isOpen ? `l’accord ouvert ${template.label}` : `forme ${qualityLabel} sur corde ${explanationString}`, "Diagramme", template.barre, template.bassString, changedStrings
+  );
+  diagram.setAttribute("role", "group");
+  const changes = changedStrings.map(index => {
+    const oldFret = previous.voicing[index];
+    const newFret = template.voicing[index];
+    const x = 12 + index * 20;
+    const oldY = explanationFretY(oldFret);
+    const newY = explanationFretY(newFret);
+    const direction = newFret < oldFret ? -1 : 1;
+    diagram.appendChild(createSvgElement("path", {
+      d: `M ${x + 8} ${oldY} V ${newY} M ${x + 6} ${newY - direction * 3} L ${x + 8} ${newY} L ${x + 10} ${newY - direction * 3}`,
+      class: "diagram-movement", "aria-hidden": "true"
+    }));
+    const intervalAt = fret => (strings[index].midi + fret - chord.root + 12) % 12;
+    const oldInterval = intervalAt(oldFret);
+    const newInterval = intervalAt(newFret);
+    const names = { 0: "octave", 3: "tierce mineure", 4: "tierce majeure", 7: "quinte", 10: "septième mineure", 11: "septième majeure" };
+    const source = oldInterval === 0 ? "L’octave" : `La ${names[oldInterval]}`;
+    if (isOpen) {
+      const destination = newInterval === 0 ? "l’octave" : `la ${names[newInterval]}`;
+      const distance = Math.abs(newFret - oldFret);
+      const distanceLabel = distance === 1 ? "d’une case" : `de ${distance} cases`;
+      return `${source} ${direction < 0 ? "descend" : "monte"} ${distanceLabel} et devient ${destination} (corde ${strings[index].note}${strings[index].stringNumber}${newFret === 0 ? ", à vide" : ""}).`;
+    }
+    const destination = newInterval === 0 ? "l’octave"
+      : oldInterval === 0 ? `une ${names[newInterval]}`
+        : newInterval === 3 || newInterval === 10 ? "mineure" : "majeure";
+    const distance = Math.abs(newFret - oldFret);
+    const distanceLabel = distance === 1 ? "d’une case" : `de ${distance} cases`;
+    return `${source} ${direction < 0 ? "descend" : "monte"} ${distanceLabel} et devient ${destination} (corde ${strings[index].note}${strings[index].stringNumber}).`;
+  });
+  const qualities = isOpen ? explanationOpenQualityOrder.filter(quality => findTemplate(quality))
+    : family.dataset.family === "major-minor" ? ["", "m"] : ["maj7", "7", "m7", "mMaj7", "", "m"];
+  const alternatives = new Map();
+  qualities.filter(quality => quality !== explanationQuality).forEach(quality => {
+    const alternative = findTemplate(quality);
+    const differences = alternative.voicing.flatMap((fret, index) => fret !== template.voicing[index] ? [index] : []);
+    differences.forEach(index => {
+      const currentFret = template.voicing[index];
+      const alternativeFret = alternative.voicing[index];
+      if (currentFret === null || alternativeFret === null) return;
+      const distance = Math.abs(alternativeFret - currentFret);
+      const intervals = [currentFret, alternativeFret].map(fret => (strings[index].midi + fret - chord.root + 12) % 12);
+      const minorSeventhToOctave = family.dataset.family === "seventh" && differences.length === 1
+        && distance === 2 && intervals.includes(10) && intervals.includes(0);
+      if (isOpen ? differences.length !== 1 : distance !== 1 && !minorSeventhToOctave) return;
+      const key = `${index}:${alternative.voicing[index]}`;
+      if (!alternatives.has(key)) alternatives.set(key, { index, fret: alternative.voicing[index], target: null });
+      if (differences.length === 1) alternatives.get(key).target = quality;
+    });
+  });
+  alternatives.forEach(({ index, fret, target }) => {
+    const x = 12 + index * 20;
+    const y = explanationFretY(fret);
+    const circle = createSvgElement("circle", {
+      cx: x, cy: y, r: 6.5,
+      class: `diagram-previous${target === null ? " diagram-unavailable" : ""}`,
+      "aria-hidden": "true"
+    });
+    if (target === null) {
+      diagram.appendChild(circle);
+      return;
+    }
+    const intervalClass = chordIntervalClass(chord, index, template.voicing[index]);
+    const interval = intervalClass === "interval-third" ? "la tierce" : intervalClass === "interval-fundamental" ? "l’octave"
+      : intervalClass === "interval-fifth" ? "la quinte" : "la septième";
+    const control = createSvgElement("g", {
+      class: "diagram-alternative",
+      role: "button",
+      tabindex: "0",
+      "data-target-quality": target,
+      "aria-label": isOpen
+        ? `Changer ${interval} : accord ${explanationOpenRoot}${target}, corde ${strings[index].note}${strings[index].stringNumber}`
+        : `Changer ${interval} : forme ${explanationQualityLabels[target]}, corde ${explanationString}`
+    });
+    control.append(circle, createSvgElement("circle", { cx: x, cy: y, r: 8, class: "diagram-hit-area", "aria-hidden": "true" }));
+    control.addEventListener("keydown", event => {
+      if (event.key !== "Enter" && event.key !== " ") return;
+      event.preventDefault();
+      setExplanationQuality(family, target);
+      const reverse = [...voice.querySelectorAll(".diagram-alternative")]
+        .find(item => item.dataset.targetQuality === explanationQuality);
+      if (reverse) reverse.focus();
+    });
+    let start = null;
+    const diagramPoint = event => {
+      const point = diagram.createSVGPoint();
+      point.x = event.clientX;
+      point.y = event.clientY;
+      return point.matrixTransform(diagram.getScreenCTM().inverse());
+    };
+    control.addEventListener("pointerdown", event => {
+      if (event.button !== 0) return;
+      event.preventDefault();
+      start = { x: event.clientX, y: event.clientY, point: diagramPoint(event) };
+      control.setPointerCapture(event.pointerId);
+    });
+    control.addEventListener("pointermove", event => {
+      if (!start) return;
+      const point = diagramPoint(event);
+      control.setAttribute("transform", `translate(${point.x - start.point.x} ${point.y - start.point.y})`);
+    });
+    control.addEventListener("pointerup", event => {
+      if (!start) return;
+      const distance = Math.hypot(event.clientX - start.x, event.clientY - start.y);
+      const end = diagramPoint(event);
+      const currentY = explanationFretY(template.voicing[index]);
+      start = null;
+      if (distance < 8 || Math.hypot(end.x - x, end.y - currentY) <= 10) {
+        setExplanationQuality(family, target);
+      } else {
+        control.removeAttribute("transform");
+      }
+    });
+    control.addEventListener("pointercancel", () => {
+      start = null;
+      control.removeAttribute("transform");
+    });
+    diagram.appendChild(control);
+  });
+  voice.querySelector(".explanation-diagram").replaceChildren(diagram);
+  voice.querySelector(".chord-title").textContent = isOpen ? `Accord ${template.label}` : `Forme ${qualityLabel} · corde ${explanationString}`;
+  voice.querySelector(".explanation-intervals").replaceChildren(createChordIntervals(chord));
+  voice.querySelector(".explanation-change").textContent = changes.length
+    ? changes.join(" ")
+    : isOpen && qualities.length === 1
+      ? "Aucune autre forme ouverte de cette fondamentale dans le dictionnaire."
+      : "Choisissez une autre forme pour comparer les positions.";
+}
+
+function renderExplanation(family, previousQuality = null) {
+  family.querySelectorAll(".explanation-voice").forEach(voice => {
+    renderExplanationVoice(voice, explanationSelections[family.dataset.family], previousQuality);
+  });
+}
+
+function setExplanationQuality(family, quality) {
+  const familyName = family.dataset.family;
+  const previousQuality = explanationSelections[familyName];
+  if (quality === previousQuality) return;
+  explanationSelections[familyName] = quality;
+  family.querySelectorAll(".explanation-quality").forEach(item => {
+    item.setAttribute("aria-pressed", String(item.dataset.quality === quality));
+  });
+  renderExplanation(family, previousQuality);
+}
+
+function selectExplanationOpenRoot(root) {
+  explanationOpenRoot = root;
+  const family = document.querySelector("#explanation-open-panel");
+  explanationOpenRoots.querySelectorAll("button").forEach(button => {
+    button.setAttribute("aria-pressed", String(button.dataset.root === root));
+  });
+  explanationOpenQualities.replaceChildren();
+  const qualities = explanationOpenQualityOrder.filter(quality => explanationOpenTemplate(quality));
+  explanationSelections.open = qualities[0];
+  qualities.forEach(quality => {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "quality-tab explanation-quality";
+    button.dataset.quality = quality;
+    button.setAttribute("aria-pressed", String(quality === explanationSelections.open));
+    button.textContent = `${root}${quality}`;
+    button.addEventListener("click", () => setExplanationQuality(family, quality));
+    explanationOpenQualities.appendChild(button);
+  });
+  renderExplanation(family);
+}
+
+function initializeExplanationOpen() {
+  const roots = new Set(explanationOpenTemplates.map(template => {
+    const chord = chords.find(candidate => candidate.label === template.label);
+    return chordRoots.find(root => root.midi === chord.root).label;
+  }));
+  roots.forEach(root => {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "quality-tab";
+    button.dataset.root = root;
+    button.textContent = root;
+    button.addEventListener("click", () => selectExplanationOpenRoot(root));
+    explanationOpenRoots.appendChild(button);
+  });
+  selectExplanationOpenRoot(explanationOpenRoot);
 }
 
 function selectQualityTab(tabs, panels, selectedTab) {
@@ -822,6 +1116,10 @@ languageButtons.forEach(languageButton => languageButton.addEventListener("click
 }));
 bindQualityTabs(openQualityTabs, openQualityPanels);
 bindQualityTabs(barreQualityTabs, barreQualityPanels);
+bindQualityTabs(explanationTabs, explanationFamilies);
+explanationQualities.forEach(qualityButton => qualityButton.addEventListener("click", () => {
+  setExplanationQuality(qualityButton.closest(".explanation-family"), qualityButton.dataset.quality);
+}));
 closeChordDialog.addEventListener("click", () => chordDialog.close());
 chordDialog.addEventListener("click", event => {
   if (event.target === chordDialog) chordDialog.close();
@@ -829,8 +1127,12 @@ chordDialog.addEventListener("click", event => {
 showIntervals.addEventListener("change", () => {
   document.body.classList.toggle("intervals-enabled", showIntervals.checked);
 });
-colorblindMode.addEventListener("change", () => {
-  document.body.classList.toggle("colorblind-enabled", colorblindMode.checked);
+colorblindModes.forEach(input => {
+  input.checked = false;
+  input.addEventListener("change", () => {
+    colorblindModes.forEach(item => { item.checked = input.checked; });
+    document.body.classList.toggle("colorblind-enabled", input.checked);
+  });
 });
 drawTicks();
 setMode("chromatic");
@@ -839,4 +1141,7 @@ selectTab(appTabs[0]);
 selectPositionTab(positionTabs[0]);
 selectQualityTab(openQualityTabs, openQualityPanels, openQualityTabs[0]);
 selectQualityTab(barreQualityTabs, barreQualityPanels, barreQualityTabs[0]);
+selectQualityTab(explanationTabs, explanationFamilies, explanationTabs[0]);
 renderOpenChords();
+initializeExplanationOpen();
+explanationFamilies.filter(family => family.dataset.family !== "open").forEach(family => renderExplanation(family));
