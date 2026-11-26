@@ -276,6 +276,13 @@ body.colorblind-enabled .interval-shape-legend { display: block; }
 .explanation-diagram .chord-diagram .diagram-alternative:focus-visible .diagram-previous { stroke: var(--brass); stroke-width: 3; }
 .explanation-diagram .chord-diagram .diagram-hit-area { fill: transparent; }
 .explanation-diagram .chord-diagram .diagram-movement { fill: none; stroke: #fff; stroke-width: 1.2; }
+.explanation-diagram .chord-diagram .diagram-interval-label { fill: #211910; font: 700 7px ui-sans-serif, sans-serif; pointer-events: none; }
+.explanation-diagram .chord-diagram .diagram-interval-quality { font-size: 5.2px; }
+.explanation-diagram .chord-diagram .diagram-open-label { fill: #f4ead6; }
+.explanation-diagram .chord-diagram circle.diagram-open.interval-fundamental { stroke: var(--interval-fundamental); }
+.explanation-diagram .chord-diagram circle.diagram-open.interval-third { stroke: var(--interval-third); }
+.explanation-diagram .chord-diagram circle.diagram-open.interval-fifth { stroke: var(--interval-fifth); }
+.explanation-diagram .chord-diagram circle.diagram-open.interval-seventh { stroke: var(--interval-seventh); }
 .search-label { display: block; margin-bottom: 7px; color: #e8d8b8; font-size: .82rem; font-weight: 700; }
 .chord-search {
   width: 100%;
@@ -360,6 +367,7 @@ body.colorblind-enabled .chord-diagram .diagram-open-shape { display: block; }
 :is(body.intervals-enabled, .explanation) .chord-diagram .diagram-open-shape.interval-third { stroke: var(--interval-third); }
 :is(body.intervals-enabled, .explanation) .chord-diagram .diagram-open-shape.interval-fifth { stroke: var(--interval-fifth); }
 :is(body.intervals-enabled, .explanation) .chord-diagram .diagram-open-shape.interval-seventh { stroke: var(--interval-seventh); }
+.explanation-diagram .chord-diagram circle.diagram-open:is(.interval-fundamental, .interval-third, .interval-fifth, .interval-seventh) { fill: none; stroke-width: 1.6; }
 .chord-diagram .diagram-string-label { fill: #b6a58c; font: 9px ui-sans-serif, sans-serif; }
 .chord-diagram .diagram-fret-label { fill: #f1dfbd; font: 10px ui-sans-serif, sans-serif; }
 .chord-dialog {

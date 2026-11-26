@@ -433,33 +433,33 @@ function chordIntervalClass(chord, stringIndex, fret) {
   return "interval-other";
 }
 
-function createIntervalShape(intervalClass, x, y, open = false) {
+function createIntervalShape(intervalClass, x, y, open = false, scale = 1) {
   const shapeClass = `diagram-shape ${open ? "diagram-open-shape" : ""} ${intervalClass}`;
   if (intervalClass === "interval-third") {
     return createSvgElement("rect", {
-      x: x - 4.5, y: y - 4.5, width: 9, height: 9, class: shapeClass, "aria-hidden": "true"
+      x: x - 4.5 * scale, y: y - 4.5 * scale, width: 9 * scale, height: 9 * scale, class: shapeClass, "aria-hidden": "true"
     });
   }
   if (intervalClass === "interval-fifth") {
     return createSvgElement("polygon", {
-      points: `${x},${y - 5.5} ${x + 5.5},${y + 4.5} ${x - 5.5},${y + 4.5}`,
+      points: `${x},${y - 5.5 * scale} ${x + 5.5 * scale},${y + 4.5 * scale} ${x - 5.5 * scale},${y + 4.5 * scale}`,
       class: shapeClass,
       "aria-hidden": "true"
     });
   }
   if (intervalClass === "interval-seventh") {
     return createSvgElement("polygon", {
-      points: `${x},${y - 5.5} ${x + 5.5},${y} ${x},${y + 5.5} ${x - 5.5},${y}`,
+      points: `${x},${y - 5.5 * scale} ${x + 5.5 * scale},${y} ${x},${y + 5.5 * scale} ${x - 5.5 * scale},${y}`,
       class: shapeClass,
       "aria-hidden": "true"
     });
   }
   return createSvgElement("circle", {
-    cx: x, cy: y, r: 5.5, class: shapeClass, "aria-hidden": "true"
+    cx: x, cy: y, r: 5.5 * scale, class: shapeClass, "aria-hidden": "true"
   });
 }
 
-function createChordDiagram(chord, voicing, chordLabel, positionLabel, barre = null, bassString = null, changedStrings = [], showBarreFret = false) {
+function createChordDiagram(chord, voicing, chordLabel, positionLabel, barre = null, bassString = null, changedStrings = [], showBarreFret = false, intervalScale = 1) {
   const svg = createSvgElement("svg", {
     class: "chord-diagram",
     viewBox: showBarreFret ? "-16 0 140 146" : "0 0 124 146",
@@ -519,7 +519,7 @@ function createChordDiagram(chord, voicing, chordLabel, positionLabel, barre = n
       marker.textContent = fret === null ? "×" : "○";
       svg.appendChild(marker);
       if (fret === 0) {
-        const shape = createIntervalShape(intervalClass, x, 15, true);
+        const shape = createIntervalShape(intervalClass, x, 15, true, intervalScale);
         if (changedStrings.includes(string)) shape.classList.add("diagram-changed");
         svg.appendChild(shape);
       }
@@ -529,10 +529,10 @@ function createChordDiagram(chord, voicing, chordLabel, positionLabel, barre = n
       svg.appendChild(createSvgElement("circle", {
         cx: x,
         cy: y,
-        r: 5.5,
+        r: 5.5 * intervalScale,
         class: `diagram-dot ${intervalClass}${barre && barre.hideDots && fret === barre.fret && string >= barre.from && string <= barre.to ? " diagram-barre-note" : ""}${changedStrings.includes(string) ? " diagram-changed" : ""}`
       }));
-      const shape = createIntervalShape(intervalClass, x, y);
+      const shape = createIntervalShape(intervalClass, x, y, false, intervalScale);
       if (changedStrings.includes(string)) shape.classList.add("diagram-changed");
       svg.appendChild(shape);
     }
@@ -547,7 +547,7 @@ function createChordDiagram(chord, voicing, chordLabel, positionLabel, barre = n
     svg.appendChild(createSvgElement("circle", {
       cx: xPosition(bassString),
       cy: 22 + (fret - firstFret + 0.5) * 18,
-      r: 7,
+      r: 7 * intervalScale,
       class: "diagram-bass",
       "aria-hidden": "true"
     }));
@@ -772,7 +772,7 @@ function renderExplanationVoice(voice, explanationQuality, previousQuality) {
     : [];
   const qualityLabel = explanationQualityLabels[explanationQuality];
   const diagram = createChordDiagram(
-    chord, template.voicing, isOpen ? `l’accord ouvert ${template.label}` : `forme ${qualityLabel} sur corde ${explanationString}`, "Diagramme", template.barre, template.bassString, changedStrings
+    chord, template.voicing, isOpen ? `l’accord ouvert ${template.label}` : `forme ${qualityLabel} sur corde ${explanationString}`, "Diagramme", template.barre, template.bassString, changedStrings, false, 1.2
   );
   diagram.setAttribute("role", "group");
   diagram.setAttribute("tabindex", "0");
@@ -902,6 +902,40 @@ function renderExplanationVoice(voice, explanationQuality, previousQuality) {
       control.removeAttribute("transform");
     });
     diagram.appendChild(control);
+  });
+  const intervalLabels = {
+    "interval-fundamental": "F",
+    "interval-third": "3",
+    "interval-fifth": "5",
+    "interval-seventh": "7"
+  };
+  const intervalQualities = { 3: "m", 4: "M", 10: "m", 11: "M" };
+  template.voicing.forEach((fret, index) => {
+    if (fret === null) return;
+    const x = 12 + index * 20;
+    const y = explanationFretY(fret);
+    const intervalClass = chordIntervalClass(chord, index, fret);
+    if (fret === 0) {
+      const marker = diagram.querySelector(`.diagram-open[x="${x}"]`);
+      marker.replaceWith(createSvgElement("circle", {
+        cx: x, cy: y, r: 6.6,
+        class: `diagram-open ${intervalClass}${changedStrings.includes(index) ? " diagram-changed" : ""}`,
+        "aria-hidden": "true"
+      }));
+    }
+    const label = createSvgElement("text", {
+      x, y, "text-anchor": "middle", "dominant-baseline": "central",
+      class: `diagram-interval-label${fret === 0 ? " diagram-open-label" : ""}`,
+      "aria-hidden": "true"
+    });
+    label.textContent = intervalLabels[intervalClass];
+    const interval = (strings[index].midi + fret - chord.root + 12) % 12;
+    if (intervalQualities[interval]) {
+      const quality = createSvgElement("tspan", { class: "diagram-interval-quality", dy: "-1.7" });
+      quality.textContent = intervalQualities[interval];
+      label.appendChild(quality);
+    }
+    diagram.appendChild(label);
   });
   voice.querySelector(".explanation-diagram").replaceChildren(diagram);
   voice.querySelector(".chord-title").textContent = isOpen ? `Accord ${template.label}` : `Forme ${qualityLabel} · corde ${explanationString}`;
