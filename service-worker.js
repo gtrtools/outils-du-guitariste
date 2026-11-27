@@ -1,14 +1,19 @@
 // Changer cette version lors d'une modification du service worker.
-const CACHE_NAME = "outils-guitariste-shell-v1";
+const CACHE_NAME = "outils-guitariste-shell-v3";
 const CACHE_PREFIX = "outils-guitariste-shell-";
 const BASE_URL = new URL(self.registration.scope);
 const INDEX_URL = new URL("index.html", BASE_URL).href;
 const STATIC_PATHS = new Set([
   "app.js",
   "style.css",
+  "vendor/html2pdf.bundle.min.js",
   "manifest.json",
   "assets/icon-192.png",
-  "assets/icon-512.png"
+  "assets/icon-512.png",
+  "assets/sounds/acoustic_guitar_nylon-mp3.js",
+  "assets/sounds/acoustic_guitar_steel-mp3.js",
+  "assets/sounds/acoustic_grand_piano-mp3.js",
+  "assets/sounds/LICENSE.txt"
 ].map(path => new URL(path, BASE_URL).pathname));
 
 self.addEventListener("install", event => {
@@ -20,7 +25,7 @@ self.addEventListener("install", event => {
     const resources = [...html.matchAll(/<(?:script|link)\b[^>]*\b(?:src|href)\s*=\s*["']([^"']+\.(?:js|css)(?:\?[^"']*)?)["']/gi)]
       .map(match => new URL(match[1], INDEX_URL))
       .filter(url => url.origin === BASE_URL.origin && url.pathname.startsWith(BASE_URL.pathname));
-    for (const required of ["app.js", "style.css"]) {
+    for (const required of ["app.js", "style.css", "vendor/html2pdf.bundle.min.js"]) {
       const path = new URL(required, BASE_URL).pathname;
       if (!resources.some(url => url.pathname === path)) {
         throw new Error(`Ressource nécessaire absente de l'accueil : ${required}`);
@@ -32,7 +37,11 @@ self.addEventListener("install", event => {
       ...resources.map(url => url.href),
       new URL("manifest.json", BASE_URL).href,
       new URL("assets/icon-192.png", BASE_URL).href,
-      new URL("assets/icon-512.png", BASE_URL).href
+      new URL("assets/icon-512.png", BASE_URL).href,
+      new URL("assets/sounds/acoustic_guitar_nylon-mp3.js", BASE_URL).href,
+      new URL("assets/sounds/acoustic_guitar_steel-mp3.js", BASE_URL).href,
+      new URL("assets/sounds/acoustic_grand_piano-mp3.js", BASE_URL).href,
+      new URL("assets/sounds/LICENSE.txt", BASE_URL).href
     ]);
     await cache.put(INDEX_URL, response);
   })());

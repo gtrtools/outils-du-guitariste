@@ -9,7 +9,31 @@
   <link rel="icon" type="image/png" sizes="192x192" href="./assets/icon-192.png">
   <link rel="apple-touch-icon" href="./assets/icon-192.png">
   <!-- Changer la version des fichiers modifiés à chaque mise en ligne. -->
-  <link rel="stylesheet" href="style.css?v=20261126-17">
+  <link rel="stylesheet" href="style.css?v=20261127-29">
+  <style id="progression-print-styles">
+    #progression-print { display: none; width: 100%; color: #000; background: #fff; font: 11pt Arial, sans-serif; }
+    #progression-print h1 { margin: 0 0 5mm; color: #000; font: bold 20pt Arial, sans-serif; letter-spacing: normal; text-align: center; }
+    #progression-print h1.print-title-with-artist { margin-bottom: 1mm; }
+    #progression-print .print-artist { margin: 0 0 5mm; color: #000; font-size: 12pt; text-align: center; }
+    #progression-print .print-capo { margin: 0 0 4mm; color: #000; font-weight: bold; }
+    #progression-print .print-part { margin: 0 0 6mm; }
+    #progression-print .print-part h2 { margin: 0 0 2mm; color: #000; font-size: 12pt; break-after: avoid; }
+    #progression-print .print-row { display: flex; flex-wrap: wrap; margin-bottom: 2mm; break-inside: avoid; }
+    #progression-print .print-measure { display: flex; flex: 0 0 auto; width: max-content; min-width: 32mm; max-width: 100%; min-height: 10mm; color: #000; break-inside: avoid; }
+    #progression-print .print-meter { display: flex; flex-direction: column; justify-content: center; padding: 0 1mm; font: bold 10pt/1 Arial, sans-serif; text-align: center; }
+    #progression-print .print-beats { display: grid; grid-template-columns: repeat(var(--beat-count), minmax(max-content, 1fr)); flex: 1; align-items: center; min-width: 0; }
+    #progression-print .print-beats span { padding: 0 1mm; text-align: left; white-space: nowrap; font-weight: bold; font-size: 10pt; }
+    #progression-print .print-barline { position: relative; flex: 0 0 6px; color: #000; }
+    #progression-print .print-barline.print-repeat { flex-basis: 12px; }
+    #progression-print .print-start { border-left: 1px solid #000; }
+    #progression-print .print-end { border-right: 1px solid #000; transform: translateX(1px); }
+    #progression-print .print-repeat::before { content: ""; position: absolute; top: 0; bottom: 0; width: 2px; background: #000; print-color-adjust: exact; -webkit-print-color-adjust: exact; }
+    #progression-print .print-start.print-repeat::before { left: 2px; }
+    #progression-print .print-end.print-repeat::before { right: 2px; }
+    #progression-print .print-repeat::after { content: ":"; position: absolute; top: 50%; transform: translateY(-50%); color: #000; font-weight: bold; }
+    #progression-print .print-start.print-repeat::after { right: 0; }
+    #progression-print .print-end.print-repeat::after { left: 0; }
+  </style>
 </head>
 <body>
   <main>
@@ -41,6 +65,13 @@
             <path d="M9.5 10.5 11 12l3.5-3.5"/>
           </svg>
           Comprendre les accords
+        </button>
+        <button class="home-action" type="button" data-panel-target="progression-panel">
+          <svg class="home-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M4 5h16M4 10h16M4 15h16M4 20h16M7 5v15M17 5v15"/>
+            <path d="M10 8h4M10 13h4M10 18h4"/>
+          </svg>
+          Écrire des suites d’accords
         </button>
       </div>
     </section>
@@ -103,7 +134,7 @@
       </div>
       <label class="search-label" for="chord-search">Rechercher un accord</label>
       <input class="chord-search" id="chord-search" type="search" placeholder="Ex. D7, F#m, B♭maj7" autocomplete="off">
-      <p class="chord-theory search-help">Accords majeurs, mineurs, 7, maj7 et m7.</p>
+      <p class="chord-theory search-help">Accords majeurs, mineurs, 7, maj7 et m7. Saisissez par exemple Db ou C# selon la notation souhaitée.</p>
       <div id="chord-suggestions" hidden>
         <p class="chord-theory">Accords proposés :</p>
         <div class="quality-tabs" id="chord-suggestion-buttons" role="group" aria-label="Accords proposés"></div>
@@ -309,6 +340,130 @@
       </section>
       <p class="chord-theory">Après un changement, la flèche va de l’ancienne position vers la nouvelle, marquée d’un contour clair.</p>
     </section>
+    <section class="dictionary progression" id="progression-panel" aria-label="Suites d’accords" tabindex="-1" hidden>
+      <h2>Écrire des suites d’accords</h2>
+      <p class="dictionary-intro">Cliquez dans une mesure pour choisir un accord. Il dure jusqu’au prochain accord, même dans la mesure suivante.</p>
+      <details class="explanation-theory" id="progression-information" open>
+        <summary>Informations sur la suite</summary>
+        <div class="progression-fields">
+          <label for="progression-name">Nom de la suite
+            <input id="progression-name" type="text" maxlength="100" placeholder="Ma suite d’accords" autocomplete="off">
+          </label>
+          <label for="progression-artist">Artiste (facultatif)
+            <input id="progression-artist" type="text" maxlength="100" placeholder="Nom de l’artiste" autocomplete="off">
+          </label>
+          <label for="progression-meter">Signature rythmique
+            <select id="progression-meter">
+              <option value="4/4">4/4</option>
+              <option value="3/4">3/4</option>
+              <option value="2/4">2/4</option>
+              <option value="5/4">5/4</option>
+              <option value="6/8">6/8</option>
+              <option value="9/8">9/8</option>
+              <option value="12/8">12/8</option>
+            </select>
+          </label>
+          <label for="progression-capo">Capodastre
+            <select id="progression-capo"></select>
+          </label>
+        </div>
+      </details>
+      <p class="chord-theory" id="progression-meter-help"></p>
+      <details class="explanation-theory">
+        <summary>Utilisation</summary>
+        <p class="chord-theory">Utilisez le bouton + sous une mesure pour en ajouter une après celle-ci.</p>
+        <p class="chord-theory">Cliquez sur les barres aux extrémités des mesures pour ajouter ou retirer une reprise.</p>
+        <p class="chord-theory">Utilisez ↵ après une mesure pour commencer une nouvelle ligne, puis ↑ sur la mesure suivante pour annuler ce retour.</p>
+        <p class="chord-theory">L’export MusicXML contient la partition et une tablature avec des doigtés calculés automatiquement ; certaines notes non essentielles peuvent être omises. Le capodastre ne transpose pas les accords ; les cases sont comptées depuis le capodastre.</p>
+        <p class="chord-theory">Le lecteur utilise des échantillons de guitare nylon, de guitare acoustique et de piano. Il peut jouer toute la suite, une partie ou une plage de mesures, une fois ou indéfiniment. Les reprises sont respectées pour la suite entière ou une partie, mais ignorées pour une plage de mesures. Modifier la suite arrête la lecture.</p>
+        <p class="chord-theory">Le métronome est facultatif. Le tempo en BPM compte les temps indiqués ci-dessus : en 6/8, 9/8 et 12/8, il compte les noires pointées.</p>
+        <p class="chord-theory">Sons : FluidR3_GM de Frank Wen et contributeurs, conversion MP3 par Benjamin Gleitzman, <a href="https://creativecommons.org/licenses/by/3.0/us/" target="_blank" rel="noopener noreferrer">CC BY 3.0</a>. <a href="assets/sounds/LICENSE.txt" target="_blank" rel="noopener noreferrer">Crédits et licence</a>.</p>
+      </details>
+      <section class="progression-player" aria-labelledby="progression-player-title">
+        <div class="progression-player-header">
+          <h3 id="progression-player-title">Player</h3>
+          <div class="progression-actions progression-player-controls">
+            <button class="progression-button progression-primary progression-player-control" id="progression-play" type="button" aria-label="Lecture" title="Lecture"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3v18l14-9z"></path></svg></button>
+            <button class="progression-button progression-player-control" id="progression-pause" type="button" aria-label="Pause" title="Pause" disabled><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 4h4v16H6zm8 0h4v16h-4z"></path></svg></button>
+            <button class="progression-button progression-player-control" id="progression-stop" type="button" aria-label="Arrêt" title="Arrêt" disabled><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5h14v14H5z"></path></svg></button>
+          </div>
+        </div>
+        <details class="progression-player-settings">
+          <summary>Réglages</summary>
+          <div class="progression-player-settings-content">
+            <div class="progression-fields">
+              <label for="progression-tempo">Tempo (BPM)
+                <input id="progression-tempo" type="number" min="40" max="240" step="1" value="100" inputmode="numeric">
+              </label>
+              <label for="progression-instrument">Son
+                <select id="progression-instrument">
+                  <option value="nylon">Guitare nylon</option>
+                  <option value="acoustic">Guitare acoustique (cordes métal)</option>
+                  <option value="piano">Piano</option>
+                </select>
+              </label>
+            </div>
+            <label class="progression-loop-toggle"><input id="progression-metronome" type="checkbox"> Métronome</label>
+            <label class="progression-loop-toggle"><input id="progression-repeat" type="checkbox"> Répéter indéfiniment</label>
+            <div class="progression-fields">
+              <label for="progression-scope">À jouer
+                <select id="progression-scope">
+                  <option value="all">Toute la suite</option>
+                  <option value="part">Une partie</option>
+                  <option value="range">Une plage de mesures</option>
+                </select>
+              </label>
+              <label id="progression-player-part-field" for="progression-player-part" hidden>Partie
+                <select id="progression-player-part"></select>
+              </label>
+            </div>
+            <div class="progression-fields" id="progression-loop-range" hidden>
+              <label for="progression-loop-start">De la mesure
+                <select id="progression-loop-start"></select>
+              </label>
+              <label for="progression-loop-end">À la mesure
+                <select id="progression-loop-end"></select>
+              </label>
+            </div>
+          </div>
+        </details>
+        <p class="chord-theory" id="progression-player-position"></p>
+        <p class="progression-status" id="progression-player-status" role="status" aria-live="polite"></p>
+      </section>
+      <div id="progression-parts" aria-label="Parties de la suite"></div>
+      <button class="progression-button" id="progression-add-part" type="button">+ Ajouter une partie</button>
+      <div class="progression-saves">
+        <div class="progression-actions progression-file-actions">
+          <button class="progression-button progression-primary" id="progression-save" type="button">Enregistrer la suite</button>
+          <button class="progression-button" id="progression-new" type="button">Nouvelle suite</button>
+          <button class="progression-button" id="progression-export" type="button">Exporter en PDF</button>
+          <button class="progression-button" id="progression-export-musicxml" type="button">Exporter en MusicXML</button>
+        </div>
+        <label for="progression-saved">Suites enregistrées sur cet appareil</label>
+        <div class="progression-actions">
+          <select id="progression-saved" aria-label="Suites enregistrées"></select>
+          <button class="progression-button" id="progression-load" type="button">Charger</button>
+          <button class="progression-button" id="progression-delete" type="button">Supprimer</button>
+        </div>
+        <p class="chord-theory">Les suites sont enregistrées uniquement sur cet appareil et dans ce navigateur.</p>
+        <p class="progression-status" id="progression-status" role="status" aria-live="polite"></p>
+        <div class="progression-actions" id="progression-musicxml-download-container" hidden>
+          <a class="progression-button" id="progression-musicxml-download" download>Télécharger le fichier MusicXML</a>
+        </div>
+      </div>
+    </section>
+    <dialog class="chord-dialog" id="progression-chord-dialog" aria-labelledby="progression-chord-title">
+      <button class="dialog-close" id="progression-chord-close" type="button">Fermer</button>
+      <h2 id="progression-chord-title">Choisir un accord</h2>
+      <label class="progression-search-label" for="progression-chord-search">Tapez un accord</label>
+      <input id="progression-chord-search" type="search" placeholder="Ex. Am, C/G, Fadd9/C" autocomplete="off">
+      <p class="chord-theory">Choisissez un accord proposé. Pour indiquer une basse, ajoutez / puis sa note, par exemple C/G.</p>
+      <div class="quality-tabs progression-suggestions" id="progression-chord-suggestions" aria-label="Accords proposés"></div>
+      <p class="progression-status" id="progression-chord-status" role="status" aria-live="polite"></p>
+      <div class="progression-actions">
+        <button class="progression-button" id="progression-chord-clear" type="button">Effacer cet accord</button>
+      </div>
+    </dialog>
     <dialog class="chord-dialog" id="chord-dialog" aria-label="Accord agrandi">
       <button class="dialog-close" id="close-chord-dialog" type="button">Fermer</button>
       <div class="interval-controls">
@@ -324,8 +479,10 @@
       <div id="expanded-chord"></div>
     </dialog>
   </main>
+  <section id="progression-print" aria-label="Suite d’accords à imprimer"></section>
 
-  <script src="app.js?v=20261126-14"></script>
+  <script src="vendor/html2pdf.bundle.min.js?v=0.14.0"></script>
+  <script src="app.js?v=20261127-37"></script>
   <script>
     if ("serviceWorker" in navigator) {
       navigator.serviceWorker.register("./service-worker.js", { updateViaCache: "none" })
